@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['orientationsensor_44',['OrientationSensor',['../classOrientationSensor.html',1,'']]],
-  ['orientationvalues_45',['OrientationValues',['../classOrientationValues.html',1,'']]]
+  ['orientationsensor_49',['OrientationSensor',['../classOrientationSensor.html',1,'']]],
+  ['orientationvalues_50',['OrientationValues',['../classOrientationValues.html',1,'']]]
 ];

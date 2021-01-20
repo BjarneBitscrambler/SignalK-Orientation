@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_5ftype_5f_40',['value_type_',['../classOrientationValues.html#a5f9bfcb526e135e9131d9796f27361ba',1,'OrientationValues']]]
+  ['update_44',['Update',['../classAttitudeValues.html#a54cc69a0c69ae09c6fe683df90fbc2c7',1,'AttitudeValues::Update()'],['../classOrientationValues.html#a882fae4a1a57919498c8980ed18d4f19',1,'OrientationValues::Update()']]]
 ];

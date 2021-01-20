@@ -1,5 +1,4 @@
-# DRAFT: SignalK-Orientation
-Until this project and instructions are setup and tested, please use the code at: https://github.com/BjarneBitscrambler/SensESP/tree/OrientationV7
+# SignalK-Orientation
 
 ## Overview
 This library provides vessel and vehicle orientation information in [Signal K](https://signalk.org/) message format. Available orientation data include:

@@ -1,3 +1,11 @@
+/** @file main.cpp
+ *  @brief Orientation output in Signal K format via SensESP.
+ * This file provides examples for using the Orientation library together
+ * with SensESP to report vessel orientation data to a Signal K server.
+ * Intended hardware is an ESP32 or ESP8266 platform and an FXOS8700/FXAS21002
+ * combination accelerometer/magnetometer/gyroscope.
+ */
+
 #include <Arduino.h>
 #include <Wire.h>
 

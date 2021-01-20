@@ -1,3 +1,12 @@
+/** @file signalk_output.h
+ *  @brief Defines the Value Producers that handle Attitude.
+ * This file replaces one of the same name in SensESP to add
+ * functionality for passing Attitude structs between
+ * Value Producers and Consumers. It also defines the JSON
+ * output container for the Attitude data in accordance with
+ * the Signal K specification v1.50
+ */
+
 #ifndef _signalk_output_H_
 #define _signalk_output_H_
 

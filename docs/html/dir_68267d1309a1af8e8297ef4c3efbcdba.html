@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SignalK-Orientation
-   &#160;<span id="projectnumber">0.1.1</span>
+   &#160;<span id="projectnumber">0.1.2</span>
    </div>
    <div id="projectbrief">Orientation output in Signal K format for ESP8266 and ESP32</div>
   </td>
@@ -74,6 +74,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
 Files</h2></td></tr>
+<tr class="memitem:main_8cpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html">main.cpp</a></td></tr>
+<tr class="memdesc:main_8cpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Orientation output in Signal K format via SensESP. This file provides examples for using the Orientation library together with SensESP to report vessel orientation data to a Signal K server. Intended hardware is an ESP32 or ESP8266 platform and an FXOS8700/FXAS21002 combination accelerometer/magnetometer/gyroscope. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:orientation__sensor_8cpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="orientation__sensor_8cpp.html">orientation_sensor.cpp</a></td></tr>
 <tr class="memdesc:orientation__sensor_8cpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Orientation sensor interface to SensESP. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -82,6 +85,9 @@ Files</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:signalk__attitude_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="signalk__attitude_8h.html">signalk_attitude.h</a> <a href="signalk__attitude_8h_source.html">[code]</a></td></tr>
 <tr class="memdesc:signalk__attitude_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vessel <a class="el" href="structAttitude.html">Attitude</a> (orientation) data structure definition file. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:signalk__output_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="signalk__output_8h.html">signalk_output.h</a> <a href="signalk__output_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:signalk__output_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines the Value Producers that handle <a class="el" href="structAttitude.html">Attitude</a>. This file replaces one of the same name in SensESP to add functionality for passing <a class="el" href="structAttitude.html">Attitude</a> structs between Value Producers and Consumers. It also defines the JSON output container for the <a class="el" href="structAttitude.html">Attitude</a> data in accordance with the Signal K specification v1.50. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
