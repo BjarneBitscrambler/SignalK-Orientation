@@ -7,7 +7,9 @@
 #include "sensesp_app.h"
 #include "orientation_sensor.h"
 #include "signalk_output.h"
-//#include "transforms/linear.h"    //for calibration, if using temperature report
+// If using the Temperature report, then include linear.h as the
+// linear transform enables temperature readings to be calibrated.
+//#include "transforms/linear.h"
 
 // Sensor hardware details: I2C addresses and pins       
 #define BOARD_ACCEL_MAG_I2C_ADDR    (0x1F) ///< I2C address on Adafruit breakout board
@@ -17,7 +19,7 @@
   #define PIN_I2C_SCL (14)  // will use default Arduino pins.
 #elif defined( ESP32 )
   #define PIN_I2C_SDA (23)  //Adjust to your board. A value of -1
-  #define PIN_I2C_SCL (25)  //will use default Arduino pins.
+  #define PIN_I2C_SCL (25)  // will use default Arduino pins.
 #endif
 
 // How often orientation parameters are published via Signal K message
@@ -59,7 +61,7 @@ ReactESP app([]() {
    * To find valid Signal K Paths look at this link (or later version):
    * @see https://signalk.org/specification/1.5.0/doc/vesselsBranch.html
    *
-   * Vessel heading can be indicated as headingCompass (uncorrected for
+   * Vessel heading can be reported as headingCompass (uncorrected for
    * Deviation) or as part of an attitude data group (i.e. yaw, pitch, roll).
    * This example provides both.
    */
@@ -126,51 +128,52 @@ ReactESP app([]() {
    * configuration to save, or that you're not interested in doing
    * run-time configuration.
    * These two are necessary until a method is created to synthesize them.
+   * 
+   * Above arrangement of config paths yields this web interface structure:
+   * Note the hardware sensor itself has no run-time configurable items.
+       sensors->attitude
+                       ->sk_path
+                       ->value_settings
+              ->heading
+                       ->sk_path
+                       ->value_settings
+   * 
    */
   const char* kConfigPathAttitude = "/sensors/attitude/value_settings";
   const char* kConfigPathAttitude_SK = "/sensors/attitude/sk";
   const char* kConfigPathHeading = "/sensors/heading/value_settings";
   const char* kConfigPathHeading_SK = "/sensors/heading/sk";
-  /**
-   Above arrangement of config paths yields this web interface structure:
-   Note the hardware sensor itself has no run-time configurable items.
-   sensors->attitude
-                   ->sk_path
-                   ->value_settings
-           ->heading
-                   ->sk_path
-                   ->value_settings
-  */
   // This example shows attitude and compass heading. If you want other parameters
   // as well, uncomment and modify the appropriate path(s) from the following 
   // or create new paths as needed.
-  //   const char* kConfigPathTurnRate_SK    = "/sensors/rateOfTurn/sk_path";
+  //   const char* kConfigPathTurnRate_SK    = "/sensors/rateOfTurn/sk";
   //   const char* kConfigPathTurnRate       = "/sensors/rateOfTurn/value_settings";
   //   const char* kConfigPathAccelXYZ       = "/sensors/acceleration/value_settings";
-  //   const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk_path";
+  //   const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk";
   //   const char* kConfigPathTemperature    = "/sensors/temperature/value_settings";
-  //   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk_path";
+  //   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
 
   /**
    * Create and initialize the Orientation data source.
    * This uses a 9 Degrees-of-freedom combination sensor that provides multiple
    * orientation parameters. Selection of which particular parameters are
    * output is performed later when the value producers are created.
-   */
-  auto* orientation_sensor = new OrientationSensor(
-      PIN_I2C_SDA, PIN_I2C_SCL, BOARD_ACCEL_MAG_I2C_ADDR, BOARD_GYRO_I2C_ADDR);
-
-  /* Magnetic Calibration occurs during regular runtime. After power-on, move
+   * 
+   * Magnetic Calibration occurs during regular runtime. After power-on, move
    * the sensor through a series of rolls, pitches and yaws. After enough
    * readings have been collected (takes 15-30 seconds when rotating the sensor
    * by hand) then the sensor should be calibrated.
-   * A Magnetic Calibration can be saved in non-volatile memory, so it will be
+   * A Magnetic Calibration can be saved in non-volatile memory so it will be
    * loaded at the next power-up. To save a calibration, use the
    * value_settings->Save_Mag_Cal entry in the sensor web interface.
    * A calibration will be valid until the sensor's magnetic environment
    * changes.
-   * TODO: It is possible to have an indication that the sensor is uncalibrated
-   * but this has not been implemented.
+   */
+  auto* orientation_sensor = new OrientationSensor(
+      PIN_I2C_SDA, PIN_I2C_SCL, BOARD_ACCEL_MAG_I2C_ADDR, BOARD_GYRO_I2C_ADDR);
+
+   /* TODO: It is possible to have an indication that the sensor is uncalibrated
+   *  but this has not been implemented.
    */
 
   /*
@@ -232,6 +235,9 @@ ReactESP app([]() {
   //                             1000, kConfigPathTemperature);
   //   sensor_temperature
   //       ->connect_to(new Linear(1.0, 0.0, "/sensors/temperature/calibrate"))
+  //  Temperature readings are passed through a linear transform
+  //  to allow for calibration/linearization via web interface. Other
+  //  transforms are available. Ensure you #include the appropriate file(s).
   //       ->connect_to(new SKOutputNumber(
   //           kSKPathTemperature, kConfigPathTemperature_SK,
   //           metadata_temperature));
