@@ -1,0 +1,6 @@
+<map id="app" name="app">
+<area shape="rect" id="node1" title=" " alt="" coords="224,64,271,91"/>
+<area shape="rect" id="node2" href="$class_attitude_values.html#a5e7ee49383d0984a2146b331d3f34b87" title="starts periodic outputs of Attitude" alt="" coords="5,5,176,32"/>
+<area shape="rect" id="node3" href="$class_orientation_values.html#af5a51df8710dc6c5b6b465974a9356ae" title="starts periodic outputs of Attitude" alt="" coords="17,57,164,98"/>
+<area shape="rect" id="node4" href="$class_orientation_sensor.html#abda8fb0864ac915c99e6d863cd6ca832" title="Constructor sets up the I2C communications to the sensor and initializes the sensor fusion library." alt="" coords="17,122,164,163"/>
+</map>
