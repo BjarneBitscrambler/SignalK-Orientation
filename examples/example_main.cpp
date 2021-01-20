@@ -5,8 +5,9 @@
 #include <string>
 
 #include "sensesp_app.h"
-#include "sensors/orientation_sensor.h"
-#include "signalk/signalk_output.h"
+#include "orientation_sensor.h"
+#include "signalk_output.h"
+//#include "transforms/linear.h"    //for calibration, if using temperature report
 
 // Sensor hardware details: I2C addresses and pins       
 #define BOARD_ACCEL_MAG_I2C_ADDR    (0x1F) ///< I2C address on Adafruit breakout board

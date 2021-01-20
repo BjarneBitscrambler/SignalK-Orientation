@@ -1,4 +1,0 @@
-<map id="OrientationSensor::OrientationSensor" name="OrientationSensor::OrientationSensor">
-<area shape="rect" id="node1" title="Constructor sets up the I2C communications to the sensor and initializes the sensor fusion library." alt="" coords="5,5,152,47"/>
-<area shape="rect" id="node2" href="$main_8cpp.html#ae4387d430ece678609fa3ae7b5fc8516" title=" " alt="" coords="200,13,247,39"/>
-</map>

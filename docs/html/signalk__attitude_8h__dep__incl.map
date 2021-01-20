@@ -1,0 +1,6 @@
+<map id="src/signalk_attitude.h" name="src/signalk_attitude.h">
+<area shape="rect" id="node1" title="Vessel Attitude (orientation) data structure definition file." alt="" coords="115,5,278,32"/>
+<area shape="rect" id="node2" href="$orientation__sensor_8h.html" title="Orientation sensor interface to SensESP." alt="" coords="13,80,191,107"/>
+<area shape="rect" id="node4" href="$signalk__output_8h_source.html" title=" " alt="" coords="216,80,369,107"/>
+<area shape="rect" id="node3" href="$orientation__sensor_8cpp.html" title="Orientation sensor interface to SensESP." alt="" coords="5,155,199,181"/>
+</map>
