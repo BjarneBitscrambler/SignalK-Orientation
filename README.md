@@ -29,14 +29,14 @@ Follow the instructions in the [SensESP README](https://github.com/SignalK/SensE
 After you have the basic setup working:
 1. Start a new Project in PlatformIO for the Arduino and your processor platform
 2. Copy the `platformio.ini` file from your working basic project (above) into your new project folder
-3. Make one modification to your shiny new `platformio.ini` - add this library to the *lib_deps* section, like this:``
+3. Make one modification to your shiny new `platformio.ini`: add these two libraries to the *lib_deps* section, as follows. See this project's sample `platformio.ini` for more details and options.
 ```
 lib_deps =
    [...]
    SignalK/SensESP
    https://github.com/BjarneBitscrambler/SignalK-Orientation.git
 ```
-4. Replace the contents of your Project's `main.cpp` file with the contents of the example file that's included with this library (found in `examples/sample_main.cpp`  Then edit your `main.cpp` to reflect the details of your particular setup (e.g. WiFi credentials, I2C pins connected to the sensor, etc). Be sure to read the comments in `main.cpp` that explain how to enable the various orientation parameters, setup the Signal K paths, and so forth.
+4. Replace the contents of your Project's `main.cpp` file with the contents of the example file that's included with this library (found in `examples/example_main.cpp`  Then edit your `main.cpp` to reflect the details of your particular setup (e.g. WiFi credentials, I2C pins connected to the sensor, etc). Be sure to read the comments in `main.cpp` that explain how to enable the various orientation parameters, setup the Signal K paths, and so forth.
 5. Build, upload, and test your Project.
 
 ## Troubleshooting and Going Further
