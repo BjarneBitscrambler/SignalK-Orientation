@@ -34,7 +34,7 @@ After you have the basic setup working:
 lib_deps =
    [...]
    SignalK/SensESP
-   https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP.git
+   https://github.com/BjarneBitscrambler/SignalK-Orientation.git
 ```
 4. Replace the contents of your Project's `main.cpp` file with the contents of the example file that's included with this library (found in `examples/example_main.cpp`  Then edit your `main.cpp` to reflect the details of your particular setup (e.g. WiFi credentials, I2C pins connected to the sensor, etc). Be sure to read the comments in `main.cpp` that explain how to enable the various orientation parameters, setup the Signal K paths, and so forth.
 5. Build, upload, and test your Project.
