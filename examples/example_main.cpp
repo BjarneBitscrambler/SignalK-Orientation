@@ -37,7 +37,7 @@
 // defines an "app" object vs defining a "main()" method.
 ReactESP app([]() {
 
-// Some initialization boilerplate when in debug mode...
+// Setup Serial port, and enable debug prints if in debug mode
 #ifndef SERIAL_DEBUG_DISABLED
   SetupSerialDebug(115200);
 #endif
@@ -52,7 +52,7 @@ ReactESP app([]() {
   sensesp_app = new SensESPApp(
       "SensESP_D1",         //hostname (name of this ESP device as advertised to SignalK)
       "mySSID",             //WiFi network SSID
-      "myPassword",         //WiFi network password
+      "myPassword$",         //WiFi network password
       "192.168.1.4",        //IP address of network's Signal K server
       3000);                //port on which to connect to Signal K server
 
@@ -75,6 +75,27 @@ ReactESP app([]() {
    */
   const char* kSKPathHeading = "navigation.headingCompass";
   const char* kSKPathAttitude = "navigation.attitude";
+  // Following 3 paths are useful when performing magnetic calibration.
+  // Fit reports "goodness of fit" of the currently in-use calibration. Lower
+  //    numbers are better: it starts at 100 when uncalibrated, and you should
+  //    aim for a value less than 3.5.
+  // Candidate reports "goodness of fit" of the next prospective calibration
+  //    (the fusion algorithm is always exploring whether a better calibration
+  //    can be developed using the latest readings). It has the same units
+  //    as Fit, and if a better fit is found that prospective calibration will
+  //    replace the current calibration. It will only be saved to non-volatile
+  //    memory though if you explicitly do so in the sensor web interface.
+  // Order indicates the complexity of the calibration fitting algorithm. The
+  //    order improves as the number of readings used increases. Order has
+  //    possible values of 0 (uncalibrated), 4, 7, and 10 (most sophisticated
+  //    algorithm).
+  // To ensure a good calibration before saving, keep adding data points via
+  //    manipulation of the sensor until the Candidate value drops below 3.5
+  //    and the Order value is 10.
+  const char* kSKPathCalFit = "orientation.calibration.fit";
+  const char* kSKPathCalCandidate = "orientation.calibration.candidate";
+  const char* kSKPathCalOrder = "orientation.calibration.order"; 
+  
   /**
    * This example shows heading, pitch, and roll. If you want other parameters
    * as well, uncomment the appropriate path(s) from the following.
@@ -207,6 +228,26 @@ ReactESP app([]() {
       kConfigPathAttitude);
   sensor_attitude->connect_to(
       new SKOutputAttitude(kSKPathAttitude, kConfigPathAttitude_SK));
+
+  // Following three sensors are useful when calibrating (see comments
+  //    above, where the SK paths are defined).
+  auto* sensor_cal_fit = new OrientationValues(
+      orientation_sensor, OrientationValues::kMagCalFitInUse,
+      ORIENTATION_REPORTING_INTERVAL_MS, "");
+  sensor_cal_fit->connect_to(
+      new SKOutputNumber(kSKPathCalFit, ""));
+
+  auto* sensor_cal_candidate = new OrientationValues(
+      orientation_sensor, OrientationValues::kMagCalFitCandidate,
+      ORIENTATION_REPORTING_INTERVAL_MS, "");
+  sensor_cal_candidate->connect_to(
+      new SKOutputNumber(kSKPathCalCandidate, ""));
+
+  auto* sensor_cal_order = new OrientationValues(
+      orientation_sensor, OrientationValues::kMagCalAlgorithmOrder,
+      ORIENTATION_REPORTING_INTERVAL_MS, "");
+  sensor_cal_order->connect_to(
+      new SKOutputNumber(kSKPathCalOrder, ""));
 
   // This example reports attitude and heading. If you want other parameters
   // as well, uncomment the appropriate connections from the following.

@@ -102,11 +102,13 @@ void AttitudeValues::enable() {
  * message contents are assembled by as_signalk(),they can reflect that. 
  */
 void AttitudeValues::Update() {
-  //check whether magnetic calibration has been requested to be saved
+  //check whether magnetic calibration has been requested to be saved or deleted
   if( 1 == save_mag_cal_ ) {
     orientation_sensor_->sensor_interface_->InjectCommand("SVMC");
-    save_mag_cal_ = 0;  // set flag back to zero so we don't repeat save
+  }else if( -1 == save_mag_cal_ ) {
+    orientation_sensor_->sensor_interface_->InjectCommand("ERMC");
   }
+  save_mag_cal_ = 0;  // set flag back to zero so we don't repeat save/delete
   attitude_.is_data_valid =
       orientation_sensor_->sensor_interface_->IsDataValid();
   attitude_.yaw = orientation_sensor_->sensor_interface_->GetHeadingRadians();
@@ -220,11 +222,13 @@ void OrientationValues::enable() {
  * by the call to notify()
  */
 void OrientationValues::Update() {
-  //check whether magnetic calibration has been requested to be saved
+  //check whether magnetic calibration has been requested to be saved or deleted
   if( 1 == save_mag_cal_ ) {
     orientation_sensor_->sensor_interface_->InjectCommand("SVMC");
-    save_mag_cal_ = 0;  // set flag back to zero so we don't repeat save
+  }else if( -1 == save_mag_cal_ ) {
+    orientation_sensor_->sensor_interface_->InjectCommand("ERMC");
   }
+  save_mag_cal_ = 0;  // set flag back to zero so we don't repeat save/delete
   //check which type of parameter is requested, and pass it on
   switch (value_type_) {
     case (kCompassHeading):
@@ -256,6 +260,15 @@ void OrientationValues::Update() {
       break;
     case (kTemperature):
       output = orientation_sensor_->sensor_interface_->GetTemperatureK();
+      break;
+    case (kMagCalFitInUse):
+      output = orientation_sensor_->sensor_interface_->GetMagneticFitError();
+      break;
+    case (kMagCalFitCandidate):
+      output = orientation_sensor_->sensor_interface_->GetMagneticFitErrorTrial();
+      break;
+    case (kMagCalAlgorithmOrder):
+      output = orientation_sensor_->sensor_interface_->GetMagneticCalOrder();
       break;
     default:
       return; //skip the notify(), due to unrecognized value type

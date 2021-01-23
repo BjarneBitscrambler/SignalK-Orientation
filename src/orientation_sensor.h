@@ -62,7 +62,7 @@ class AttitudeValues : public AttitudeProducer, public Sensor {
   virtual String get_config_schema() override;
   Attitude attitude_;  ///< struct storing the current yaw,pitch,roll values
   uint report_interval_ms_;  ///< interval between attitude updates to Signal K
-  uint8_t save_mag_cal_;     ///< Flag for saving current magnetic calibration
+  int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
 
 };  // end class AttitudeValues
 
@@ -78,18 +78,21 @@ class AttitudeValues : public AttitudeProducer, public Sensor {
 class OrientationValues : public NumericSensor {
  public:
   enum OrientationValType {
-    kCompassHeading,  ///< compass heading, also called yaw
-    kYaw,             ///< rotation about the vertical axis
-    kPitch,           ///< rotation about the transverse axis
-    kRoll,            ///< rotation about the longitudinal axis
-    kAttitude,        ///< attitude combines heading, pitch, and roll
-    kAccelerationX,   ///< acceleration in the stern-to-bow axis
-    kAccelerationY,   ///< acceleration in the starboard-to-port axis
-    kAccelerationZ,   ///< acceleration in the down-to-up axis
-    kRateOfTurn,      ///< rate of change of compass heading
-    kRateOfPitch,     ///< rate of change of pitch
-    kRateOfRoll,      ///< rate of change of roll
-    kTemperature      ///< temperature as reported by sensor IC
+    kCompassHeading,      ///< compass heading, also called yaw
+    kYaw,                 ///< rotation about the vertical axis
+    kPitch,               ///< rotation about the transverse axis
+    kRoll,                ///< rotation about the longitudinal axis
+    kAttitude,            ///< attitude combines heading, pitch, and roll
+    kAccelerationX,       ///< acceleration in the stern-to-bow axis
+    kAccelerationY,       ///< acceleration in the starboard-to-port axis
+    kAccelerationZ,       ///< acceleration in the down-to-up axis
+    kRateOfTurn,          ///< rate of change of compass heading
+    kRateOfPitch,         ///< rate of change of pitch
+    kRateOfRoll,          ///< rate of change of roll
+    kTemperature,         ///< temperature as reported by sensor IC
+    kMagCalFitInUse,      ///< fit of currently-used calibration. <3.5 is good.
+    kMagCalFitCandidate,  ///< fit of candidate calibration. <3.5 is good.
+    kMagCalAlgorithmOrder ///< fit algorithm order in use. [0,4,7,10] 10 is best
   };
   OrientationValues(OrientationSensor* orientation_sensor,
                     OrientationValType value_type = kCompassHeading,
@@ -107,7 +110,7 @@ class OrientationValues : public NumericSensor {
   OrientationValType
       value_type_;  ///< Particular type of orientation parameter supplied
   uint report_interval_ms_;  ///< Interval between data outputs via Signal K
-  uint8_t save_mag_cal_;     ///< Flag for saving current magnetic calibration
+  int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
 
 };  // end class OrientationValues
 
