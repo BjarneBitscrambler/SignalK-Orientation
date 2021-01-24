@@ -15,19 +15,32 @@
 #include "sensesp_app.h"
 #include "orientation_sensor.h"
 #include "signalk_output.h"
-// If using the Temperature report, then include linear.h as the
-// linear transform enables temperature readings to be calibrated.
+/**
+ * If using a button-press to save Magnetic Calibration, then include
+ * digital_input.h, lambda_consumer.h, and debounce.h
+ */
+#include "sensors/digital_input.h"
+#include "system/lambda_consumer.h"
+#include "transforms/debounce.h"
+/**
+ * If using the Temperature report, then include linear.h as the
+ * linear transform enables temperature readings to be calibrated.
+ */
 //#include "transforms/linear.h"
 
 // Sensor hardware details: I2C addresses and pins       
 #define BOARD_ACCEL_MAG_I2C_ADDR    (0x1F) ///< I2C address on Adafruit breakout board
 #define BOARD_GYRO_I2C_ADDR         (0x21) ///< I2C address on Adafruit breakout board
 #if defined( ESP8266 )
-  #define PIN_I2C_SDA (12)  //Adjust to your board. A value of -1
-  #define PIN_I2C_SCL (14)  // will use default Arduino pins.
+  #define PIN_I2C_SDA (12)          // Adjust to your board. A value of -1
+  #define PIN_I2C_SCL (14)          // will use default Arduino pins.
+  #define PIN_SWITCH_CAL_SAVE (0)   // When at SWITCH_ACTIVE_STATE, saves mag calibration
+  #define SWITCH_ACTIVE_STATE (0)   // Input is LOW when Switch is pushed
 #elif defined( ESP32 )
-  #define PIN_I2C_SDA (23)  //Adjust to your board. A value of -1
-  #define PIN_I2C_SCL (25)  // will use default Arduino pins.
+  #define PIN_I2C_SDA (23)          // Adjust to your board. A value of -1
+  #define PIN_I2C_SCL (25)          // will use default Arduino pins.
+  #define PIN_SWITCH_CAL_SAVE (36)  // When brought LOW, will save magnetic calibration
+  #define SWITCH_ACTIVE_STATE (0)   // Input is LOW when Switch is pushed
 #endif
 
 // How often orientation parameters are published via Signal K message
@@ -52,7 +65,7 @@ ReactESP app([]() {
   sensesp_app = new SensESPApp(
       "SensESP_D1",         //hostname (name of this ESP device as advertised to SignalK)
       "mySSID",             //WiFi network SSID
-      "myPassword$",         //WiFi network password
+      "myPassword",         //WiFi network password
       "192.168.1.4",        //IP address of network's Signal K server
       3000);                //port on which to connect to Signal K server
 
@@ -233,21 +246,49 @@ ReactESP app([]() {
   //    above, where the SK paths are defined).
   auto* sensor_cal_fit = new OrientationValues(
       orientation_sensor, OrientationValues::kMagCalFitInUse,
-      ORIENTATION_REPORTING_INTERVAL_MS, "");
+      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
   sensor_cal_fit->connect_to(
       new SKOutputNumber(kSKPathCalFit, ""));
 
   auto* sensor_cal_candidate = new OrientationValues(
       orientation_sensor, OrientationValues::kMagCalFitCandidate,
-      ORIENTATION_REPORTING_INTERVAL_MS, "");
+      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
   sensor_cal_candidate->connect_to(
       new SKOutputNumber(kSKPathCalCandidate, ""));
 
   auto* sensor_cal_order = new OrientationValues(
       orientation_sensor, OrientationValues::kMagCalAlgorithmOrder,
-      ORIENTATION_REPORTING_INTERVAL_MS, "");
+      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
   sensor_cal_order->connect_to(
       new SKOutputNumber(kSKPathCalOrder, ""));
+
+  /**
+   * If a physical switch is wanted to save magnetic calibration,
+   * then uncomment the following.
+   */
+  // Monitor a button every read_interval ms for CHANGEs in state.
+  // Note that no web interface path is supplied, so interval is not adjustable.
+  // Note INPUT_PULLUP may need to change depending on how button is wired.
+  const int kReadInterval = 100;
+  auto* button_watcher = new DigitalInputChange(
+      PIN_SWITCH_CAL_SAVE, INPUT_PULLUP, CHANGE, kReadInterval, "");
+  // Create a debounce transform, also with no web interface.
+  const int kDebounceDelay = 350; // only react to pushes >350 ms + kReadInterval
+  auto* debounce = new DebounceInt(kDebounceDelay, "");
+  // Define the action taken when button is active and debounce has elapsed.
+  // Provide it with the context of orientation_sensor so it can access save fcn.
+  auto save_mcal_function = [orientation_sensor](int input) {
+    if (input == SWITCH_ACTIVE_STATE) {
+      orientation_sensor->sensor_interface_->InjectCommand("SVMC");
+      debugI("Mag Cal saved");
+    }
+  };
+  auto* button_consumer = new LambdaConsumer<int>(save_mcal_function);
+  // Connect the button -> debounce -> save magnetic calibration fcn
+  button_watcher->connect_to(debounce)->connect_to(button_consumer);
+  /**
+   * End of optional physical switch section.
+   */
 
   // This example reports attitude and heading. If you want other parameters
   // as well, uncomment the appropriate connections from the following.
