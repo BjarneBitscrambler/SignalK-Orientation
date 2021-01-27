@@ -185,6 +185,108 @@ bool AttitudeValues::set_configuration(const JsonObject& config) {
  * @brief Constructor sets up the frequency of output and the Signal K path.
  *
  * @param orientation_sensor Pointer to the physical sensor's interface
+ * @param report_interval_ms Interval between output reports
+ * @param config_path RESTful path by which reporting frequency can be
+ * configured.
+ */
+MagCalValues::MagCalValues(OrientationSensor* orientation_sensor,
+                               uint report_interval_ms, String config_path)
+    : Sensor(config_path),
+      orientation_sensor_{orientation_sensor},
+      report_interval_ms_{report_interval_ms} {
+  load_configuration();
+}  // end MagCalValues()
+
+/**
+ * @brief Starts periodic output of MagCal parameters.
+ *
+ * The enable() function is inherited from Sensor::, and is
+ * automatically called when the SensESP app starts.
+ */
+void MagCalValues::enable() {
+  app.onRepeat(report_interval_ms_, [this]() { this->Update(); });
+}
+
+/**
+ * @brief Provides one MagCal reading from the orientation sensor.
+ *
+ * Readings are obtained using the sensor fusion library's Get_() methods
+ * and assigned to the output variable that passes data from Producers
+ * to Consumers. Consumers of the magcal data are then informed
+ * by the call to notify(). If data are not valid (e.g. sensor not
+ * functioning), a struct member is set to false so when the Signal K
+ * message contents are assembled by as_signalk(),they can reflect that. 
+ */
+void MagCalValues::Update() {
+  mag_cal_.is_data_valid =
+      orientation_sensor_->sensor_interface_->IsDataValid();
+  mag_cal_.cal_fit_error = orientation_sensor_->sensor_interface_->GetMagneticFitError() / 100.0;
+  mag_cal_.cal_fit_error_trial = orientation_sensor_->sensor_interface_->GetMagneticFitErrorTrial() / 100.0;
+  mag_cal_.mag_field_magnitude = orientation_sensor_->sensor_interface_->GetMagneticBMag();
+  mag_cal_.mag_field_magnitude_trial = orientation_sensor_->sensor_interface_->GetMagneticBMagTrial();
+  mag_cal_.mag_noise_covariance = orientation_sensor_->sensor_interface_->GetMagneticNoiseCovariance();
+  mag_cal_.mag_solver = orientation_sensor_->sensor_interface_->GetMagneticCalSolver();
+  mag_cal_.magnetic_inclination = orientation_sensor_->sensor_interface_->GetMagneticInclinationRad();
+
+  output = mag_cal_;
+  notify();
+}  // end Update()
+
+/**
+ * @brief Define the format for the MagCal value producer.
+ *
+ */
+static const char SCHEMA_MAGCAL[] PROGMEM = R"###({
+    "type": "object",
+    "properties": {
+        "report_interval": { 
+          "title": "Report Interval", 
+          "type": "number", 
+          "description": "Milliseconds between outputs of this parameter" 
+        }
+    }
+  })###";
+
+/**
+ * @brief Get the current sensor configuration and place it in a JSON
+ * object that can then be stored in non-volatile memory.
+ * 
+ * @param doc JSON object to contain the configuration parameters
+ * to be updated.
+ */
+void MagCalValues::get_configuration(JsonObject& doc) {
+  doc["report_interval"] = report_interval_ms_;
+}  // end get_configuration()
+
+/**
+ * @brief Fetch the JSON format used for holding the configuration.
+ */
+String MagCalValues::get_config_schema() { return FPSTR(SCHEMA_MAGCAL); }
+
+/**
+ * @brief Use the values stored in JSON object config to update
+ * the appropriate member variables.
+ *
+ * @param config JSON object containing the configuration parameters
+ * to be updated.
+ * @return True if successful; False if a parameter could not be found.
+ */
+bool MagCalValues::set_configuration(const JsonObject& config) {
+  String expected[] = {"report_interval"};
+  for (auto str : expected) {
+    if (!config.containsKey(str)) {
+      return false;
+    }
+  }
+  report_interval_ms_ = config["report_interval"];
+  return true;
+}  // end set_configuration()
+
+
+/**
+ * @brief Constructor sets up the frequency of output and the Signal K path.
+ *
+ * @param orientation_sensor Pointer to the physical sensor's interface
  * @param val_type The type of orientation parameter to be sent
  * @param report_interval_ms Interval between output reports
  * @param config_path RESTful path by which reporting frequency can be
@@ -264,11 +366,23 @@ void OrientationValues::Update() {
     case (kMagCalFitInUse):
       output = orientation_sensor_->sensor_interface_->GetMagneticFitError();
       break;
-    case (kMagCalFitCandidate):
+    case (kMagCalFitTrial):
       output = orientation_sensor_->sensor_interface_->GetMagneticFitErrorTrial();
       break;
     case (kMagCalAlgorithmSolver):
       output = orientation_sensor_->sensor_interface_->GetMagneticCalSolver();
+      break;
+    case (kMagInclination):
+      output = orientation_sensor_->sensor_interface_->GetMagneticInclinationRad();
+      break;
+    case (kMagFieldMagnitude):
+      output = orientation_sensor_->sensor_interface_->GetMagneticBMag();
+      break;
+    case (kMagFieldMagnitudeTrial):
+      output = orientation_sensor_->sensor_interface_->GetMagneticBMagTrial();
+      break;
+    case (kMagNoiseCovariance):
+      output = orientation_sensor_->sensor_interface_->GetMagneticNoiseCovariance();
       break;
     default:
       return; //skip the notify(), due to unrecognized value type

@@ -11,7 +11,7 @@
 #include "sensor_fusion_class.h"  // for OrientationSensorFusion-ESP library
 
 #include "sensors/sensor.h"
-#include "signalk_attitude.h"
+#include "signalk_orientation.h"
 
 /**
  * @brief OrientationSensor represents a 9-Degrees-of-Freedom sensor
@@ -67,6 +67,32 @@ class AttitudeValues : public AttitudeProducer, public Sensor {
 };  // end class AttitudeValues
 
 /**
+ * @brief MagCalValues reads and outputs magnetic calibration parameters.
+ *
+ * The parameters are stored in an MagCal struct, and sent together
+ * in one Signal K message. They are useful in determining how well
+ * the existing magnetic calibration suits the current magnetic
+ * environment.
+ */
+class MagCalValues : public MagCalProducer, public Sensor {
+ public:
+  MagCalValues(OrientationSensor* orientation_sensor,
+                 uint report_interval_ms = 100, String config_path = "");
+  void enable() override final;  ///< starts periodic outputs of MagCal values
+  OrientationSensor*
+      orientation_sensor_;  ///< Pointer to the orientation sensor
+
+ private:
+  void Update(void);  ///< fetches current attitude and notifies consumer
+  virtual void get_configuration(JsonObject& doc) override;
+  virtual bool set_configuration(const JsonObject& config) override;
+  virtual String get_config_schema() override;
+  MagCal mag_cal_;  ///< struct storing the current magnetic calibration parameters
+  uint report_interval_ms_;  ///< interval between attitude updates to Signal K
+
+};  // end class MagCalValues
+
+/**
  * @brief OrientationValues reads and outputs orientation parameters.
  *
  * One parameter is sent per instance of OrientationValues, selected
@@ -91,8 +117,12 @@ class OrientationValues : public NumericSensor {
     kRateOfRoll,          ///< rate of change of roll
     kTemperature,         ///< temperature as reported by sensor IC
     kMagCalFitInUse,      ///< fit of currently-used calibration. <3.5 is good.
-    kMagCalFitCandidate,  ///< fit of candidate calibration. <3.5 is good.
-    kMagCalAlgorithmSolver ///< cal algorithm order used. [0,4,7,10] 10 is best
+    kMagCalFitTrial,      ///< fit of candidate calibration. <3.5 is good.
+    kMagCalAlgorithmSolver,   ///< cal algorithm order used. [0,4,7,10] 10 is best
+    kMagInclination,      ///< geomagnetic inclination based on current readings
+    kMagFieldMagnitude,   ///< geomagnetic magnitude of current calibration
+    kMagFieldMagnitudeTrial,  ///< geomagnetic magnitude based on current readings
+    kMagNoiseCovariance   ///< deviation of current reading from calibrated geomag sphere
   };
   OrientationValues(OrientationSensor* orientation_sensor,
                     OrientationValType value_type = kCompassHeading,
