@@ -214,10 +214,6 @@ ReactESP app([]() {
   auto* orientation_sensor = new OrientationSensor(
       PIN_I2C_SDA, PIN_I2C_SCL, BOARD_ACCEL_MAG_I2C_ADDR, BOARD_GYRO_I2C_ADDR);
 
-   /* TODO: It is possible to have an indication that the sensor is uncalibrated
-   *  but this has not been implemented.
-   */
-
   /*
    * Create the desired outputs from orientation sensor. Note that the physical
    * sensor is read at whatever rate is specified in the Sensor Fusion library's
@@ -257,7 +253,7 @@ ReactESP app([]() {
       new SKOutputNumber(kSKPathCalCandidate, ""));
 
   auto* sensor_cal_order = new OrientationValues(
-      orientation_sensor, OrientationValues::kMagCalAlgorithmOrder,
+      orientation_sensor, OrientationValues::kMagCalAlgorithmSolver,
       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
   sensor_cal_order->connect_to(
       new SKOutputNumber(kSKPathCalOrder, ""));
@@ -279,7 +275,7 @@ ReactESP app([]() {
   // Provide it with the context of orientation_sensor so it can access save fcn.
   auto save_mcal_function = [orientation_sensor](int input) {
     if (input == SWITCH_ACTIVE_STATE) {
-      orientation_sensor->sensor_interface_->InjectCommand("SVMC");
+      orientation_sensor->sensor_interface_->SaveMagneticCalibration();
       debugI("Mag Cal saved");
     }
   };

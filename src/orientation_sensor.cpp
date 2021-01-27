@@ -267,8 +267,8 @@ void OrientationValues::Update() {
     case (kMagCalFitCandidate):
       output = orientation_sensor_->sensor_interface_->GetMagneticFitErrorTrial();
       break;
-    case (kMagCalAlgorithmOrder):
-      output = orientation_sensor_->sensor_interface_->GetMagneticCalOrder();
+    case (kMagCalAlgorithmSolver):
+      output = orientation_sensor_->sensor_interface_->GetMagneticCalSolver();
       break;
     default:
       return; //skip the notify(), due to unrecognized value type
