@@ -92,7 +92,7 @@ class OrientationValues : public NumericSensor {
     kTemperature,         ///< temperature as reported by sensor IC
     kMagCalFitInUse,      ///< fit of currently-used calibration. <3.5 is good.
     kMagCalFitCandidate,  ///< fit of candidate calibration. <3.5 is good.
-    kMagCalAlgorithmOrder ///< fit algorithm order in use. [0,4,7,10] 10 is best
+    kMagCalAlgorithmOrder ///< cal algorithm order in use. [0,4,7,10] 10 is best
   };
   OrientationValues(OrientationSensor* orientation_sensor,
                     OrientationValType value_type = kCompassHeading,
