@@ -376,9 +376,11 @@ void OrientationValues::Update() {
       output = orientation_sensor_->sensor_interface_->GetMagneticInclinationRad();
       break;
     case (kMagFieldMagnitude):
+      //TODO report in T rather than uT, however need widget to be able to display
       output = orientation_sensor_->sensor_interface_->GetMagneticBMag();
       break;
     case (kMagFieldMagnitudeTrial):
+      //TODO report in T rather than uT, however need widget to be able to display
       output = orientation_sensor_->sensor_interface_->GetMagneticBMagTrial();
       break;
     case (kMagNoiseCovariance):
