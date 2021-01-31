@@ -14,7 +14,7 @@ It uses a 9-axis combination accelerometer/magnetometer/gyroscope attached to an
 ## Hardware
 Orientation sensing uses an NXP FXOS8700 and FXAS21002C/FXAS21002CQ combination sensor, like [the Adafruit 3463 module](https://www.adafruit.com/product/3463)
 
-Processing and WiFi connection is provided by an ESP32 or ESP8266 module. It has been tested on a [d1_mini](https://www.wemos.cc/en/latest/d1/d1_mini.html) and an [ESP32-WROVER-KIT](https://www.digikey.ca/en/products/detail/espressif-systems/ESP-WROVER-KIT-VB/8544301)
+Processing and WiFi connection is provided by an ESP32 or ESP8266 module. It has been tested on a [d1_mini](https://www.wemos.cc/en/latest/d1/d1_mini.html), an [ESP32-WROVER-KIT](https://www.digikey.ca/en/products/detail/espressif-systems/ESP-WROVER-KIT-VB/8544301), and an [ESP-32-WROOM dev board](https://www.amazon.se/dp/B08CCYWZN3)
 
 The software is adaptable to work with other orientation sensors, but the most straightfortward approach is to use the above already-tested hardware.
 
@@ -47,3 +47,11 @@ If you start with a basic configuration and proceed in small testable steps, it 
 * **Sensor Fusion** https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP has details on the sensor fusion algorithm and orientation sensor performance in the Readme, Wiki, and Documentation sections
 * **Contact Me** I can be contacted through the Discussions tab on the OrientationSensorFusion-ESP library: https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP/discussions
 
+### ESP8266 Note Regarding Memory Use
+The ESP8266 module has less RAM than the ESP32, and if you add multiple hardware sensors to a single module then you may run into a shortage of run-time memory. Symptoms of this problem include inability to access the ESP module's web interface. If the module has less than about 9000 bytes of freemem (as reported by one of the SensESP standard sensors, and seen in the Signal K Instrument Panel), then this may be causing difficulties. 
+
+One fix is to compile the ESP software with `#define DEBUG_DISABLED`.  This causes the RemoteDebug library to ignore all the `debugI(), debugE()` etc calls throughout the SensESP code and saves about 8900 bytes of RAM. The downside to doing this is that any information one was gleaning from the serial terminal won't be sent anymore, however the Signal K and the sensor's web interface are unaffected.  To define DEBUG_DISABLED you can either uncomment the appropriate line in `RemoteDebug.h` and `RemoteDebug.cpp`, or the easier way is to add `-D DEBUG_DISABLED` to your list of `build_flags = ...` in   `platformio.ini`  Remember to do a clean before rebuilding.  
+
+More memory-saving details can be found at https://github.com/SignalK/SensESP/issues/239
+
+As of January 2021, the **d1_mini** runs when configured with one orientation sensor plus Signal K reports for heading, attitude, IP address, freemem, uptime, system Hz, magnetic calibration parameters, as well as monitoring one physical switch.  This is close to the maximum though, without taking extra steps such as disabing the debug messages as described above.
