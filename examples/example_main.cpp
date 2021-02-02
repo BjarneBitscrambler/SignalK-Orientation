@@ -65,6 +65,8 @@
 #endif
 
 // How often orientation parameters are published via Signal K message
+// If a report interval is saved for a particular sensor path (via the web
+// interface), that overrides the following #define for that report.
 #define ORIENTATION_REPORTING_INTERVAL_MS (100)
 
 // SensESP builds upon the ReactESP framework. Every ReactESP application
@@ -177,7 +179,7 @@ ReactESP app([]() {
   //
   //   SKMetadata* metadata_temperature = new SKMetadata();
   //   metadata_temperature->description_ =
-  //        "Temperature reported by orientation sensor"
+  //        "Temperature reported by orientation sensor";
   //   metadata_temperature->display_name_ = "Temperature at eCompass";
   //   metadata_temperature->short_name_ = "Temp";
   //   metadata_temperature->units_ = "K";
