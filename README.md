@@ -3,13 +3,15 @@
 ## Overview
 This library provides vessel and vehicle orientation information in [Signal K](https://signalk.org/) message format. Available orientation data include:
 * Attitude (yaw, pitch, roll)
-* Compass Heading
+* Compass Heading and Magnetic Heading (corrected for deviation)
 * Acceleration in 3 axes
 * Turn Rate
 * Pitch Rate
 * Roll Rate
 
 It uses a 9-axis combination accelerometer/magnetometer/gyroscope attached to an Espressif ESP32 or ESP8266 processor. Sensor fusion is performed by the ESP using a port of NXP's version 7 sensor fusion library, and formatted into Signal K by the SensESP library. SensESP also takes care of transferring the orientation data via WiFi to a Signal K server.
+
+Using the hardware below, Signal K messages containing heading data can be output at up to 40 Hz.
 
 ## Hardware
 Orientation sensing uses an NXP FXOS8700 and FXAS21002C/FXAS21002CQ combination sensor, like [the Adafruit 3463 module](https://www.adafruit.com/product/3463)
