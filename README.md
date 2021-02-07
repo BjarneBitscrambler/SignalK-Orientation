@@ -44,7 +44,8 @@ If you start with a basic configuration and proceed in small testable steps, it 
 * **Signal K** https://signalk.org/ for details on Signal K message contents, connectivity, units, display options.
 * **Signal K Server** https://github.com/SignalK/signalk-server a Signal K server intended for Raspberry Pi, Beaglebone, or UDOO platforms.
 * **SensESP** https://github.com/SignalK/SensESP for setting up an ESP32 or ESP8266 sensor and connecting it to a Signal K server. See also the Wiki at this location for additional advice on getting the built-in sensors reporting to the Signal K server.
-* **Sensor Fusion** https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP has details on the sensor fusion algorithm and orientation sensor performance in the Readme, Wiki, and Documentation sections
+* **Sensor Fusion** https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP has details on the sensor fusion algorithm and orientation sensor performance in the *Readme*, *Wiki*, and *Documentation* sections
+* **this library** Additional information, particularly relating to performing magnetic calibration, is in this project's *Wiki*.
 * **Contact Me** I can be contacted through the Discussions tab on the OrientationSensorFusion-ESP library: https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP/discussions
 
 ### ESP8266 Note Regarding Memory Use
