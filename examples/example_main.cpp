@@ -189,7 +189,10 @@ ReactESP app([]() {
    * used by the RESTful API for retrieving or setting configuration data.
    * It is ALSO used to specify a path to the file system
    * where configuration data is saved on the MCU board. It should
-   * ALWAYS start with a forward slash if specified. If left blank,
+   * ALWAYS start with a forward slash if specified. 
+   * The max length for a config path is 32 characters, due to a limitation
+   * in the SPIFFS filesystem.
+   * If the config path is left blank,
    * that indicates this sensor or transform does not have any
    * configuration to save, or that you're not interested in doing
    * run-time configuration.
@@ -205,26 +208,26 @@ ReactESP app([]() {
    * Below arrangement of config paths yields this web interface structure:
    * 
        sensors->attitude
-                       ->value_settings (adjusts report interval, saves mag cal)
+                       ->settings (adjusts report interval, saves mag cal)
               ->heading
-                       ->value_settings (adjusts report interval, saves mag cal)
+                       ->settings (adjusts report interval, saves mag cal)
                        ->deviation      (adjusts compass deviation)
    * 
    */
   const char* kConfigPathAttitude_SK = "";
-  const char* kConfigPathAttitude    = "/sensors/attitude/value_settings";
+  const char* kConfigPathAttitude    = "/sensors/attitude/settings";
   const char* kConfigPathHeading_SKC = "";
   const char* kConfigPathHeading_SKM = "";
-  const char* kConfigPathHeading     = "/sensors/heading/value_settings";
+  const char* kConfigPathHeading     = "/sensors/heading/settings";
   const char* kConfigPathHeadingDev  = "/sensors/heading/deviation";
   // This example shows attitude and compass heading. If you want other parameters
   // as well, uncomment and modify the appropriate path(s) from the following 
   // or create new paths as needed.
   //   const char* kConfigPathTurnRate_SK    = "/sensors/rateOfTurn/sk";
-  //   const char* kConfigPathTurnRate       = "/sensors/rateOfTurn/value_settings";
-  //   const char* kConfigPathAccelXYZ       = "/sensors/acceleration/value_settings";
+  //   const char* kConfigPathTurnRate       = "/sensors/rateOfTurn/settings";
+  //   const char* kConfigPathAccelXYZ       = "/sensors/acceleration/settings";
   //   const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk";
-  //   const char* kConfigPathTemperature    = "/sensors/temperature/value_settings";
+  //   const char* kConfigPathTemperature    = "/sensors/temperature/settings";
   //   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
 
   /**
