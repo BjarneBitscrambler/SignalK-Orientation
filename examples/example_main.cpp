@@ -143,10 +143,10 @@ ReactESP app([]() {
   const char* kSKPathMagFitTrial     = "orientation.calibration.magfittrial";
   const char* kSKPathMagSolver       = "orientation.calibration.magsolver";
   //const char* kSKPathMagInclination  = "orientation.calibration.maginclination";
-  //const char* kSKPathkMagBValue      = "orientation.calibration.magmagnitude";
-  //const char* kSKPathkMagBValueTrial = "orientation.calibration.magmagnitudetrial";
-  //const char* kSKPathkMagNoise       = "orientation.calibration.magnoise";
-  //const char* kSKPathkMagCalValues   = "orientation.calibration.magvalues";
+  //const char* kSKPathMagBValue      = "orientation.calibration.magmagnitude";
+  //const char* kSKPathMagBValueTrial = "orientation.calibration.magmagnitudetrial";
+  //const char* kSKPathMagNoise       = "orientation.calibration.magnoise";
+  //const char* kSKPathMagCalValues   = "orientation.calibration.magvalues";
 
   /**
    * If you are creating a new Signal K path that does not
@@ -319,36 +319,36 @@ ReactESP app([]() {
   sensor_cal_order->connect_to(
       new SKOutputNumber(kSKPathMagSolver, ""));
 
-  // auto* sensor_b_mag = new OrientationValues(
+  // auto* sensor_mag_inclination = new OrientationValues(
   //     orientation_sensor, OrientationValues::kMagInclination,
   //     ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-  // sensor_b_mag->connect_to(
+  // sensor_mag_inclination->connect_to(
   //     new SKOutputNumber(kSKPathMagInclination, ""));
 
-  // auto* sensor_b_mag = new OrientationValues(
+  // auto* sensor_mag_b_value = new OrientationValues(
   //     orientation_sensor, OrientationValues::kMagFieldMagnitude,
   //     ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-  // sensor_b_mag->connect_to(
-  //     new SKOutputNumber(kSKPathkMagBValue, ""));
+  // sensor_mag_b_value->connect_to(
+  //     new SKOutputNumber(kSKPathMagBValue, ""));
 
-  // auto* sensor_b_mag = new OrientationValues(
+  // auto* sensor_mag_b_value_trial = new OrientationValues(
   //     orientation_sensor, OrientationValues::kMagFieldMagnitudeTrial,
   //     ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-  // sensor_b_mag->connect_to(
-  //     new SKOutputNumber(kSKPathkMagBValueTrial, ""));
+  // sensor_mag_b_value_trial->connect_to(
+  //     new SKOutputNumber(kSKPathMagBValueTrial, ""));
 
-  // auto* sensor_b_mag = new OrientationValues(
+  // auto* sensor_mag_noise = new OrientationValues(
   //     orientation_sensor, OrientationValues::kMagNoiseCovariance,
   //     ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-  // sensor_b_mag->connect_to(
-  //     new SKOutputNumber(kSKPathkMagNoise, ""));
+  // sensor_mag_noise->connect_to(
+  //     new SKOutputNumber(kSKPathMagNoise, ""));
 
   // This report is a consolidation of all the above magnetic cal
   // values and will need a custom instrument to display.
   // auto* sensor_mag_cal = new MagCalValues(
   //     orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
   // sensor_mag_cal->connect_to(
-  //     new SKOutputMagCal(kSKPathkMagCalValues, ""));
+  //     new SKOutputMagCal(kSKPathMagCalValues, ""));
 
   /**
    * Following section monitors a physical switch that, when pressed,
