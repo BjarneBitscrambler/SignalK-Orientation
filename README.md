@@ -18,7 +18,7 @@ Orientation sensing uses an NXP FXOS8700 and FXAS21002C/FXAS21002CQ combination 
 
 Processing and WiFi connection is provided by an ESP32 or ESP8266 module. It has been tested on a [d1_mini](https://www.wemos.cc/en/latest/d1/d1_mini.html), an [ESP32-WROVER-KIT](https://www.digikey.ca/en/products/detail/espressif-systems/ESP-WROVER-KIT-VB/8544301), and an [ESP-32-WROOM dev board](https://www.amazon.se/dp/B08CCYWZN3)
 
-The software is adaptable to work with other orientation sensors, but the most straightfortward approach is to use the above already-tested hardware.
+The software is adaptable to work with other orientation sensors, but the most straightforward approach is to use the above already-tested hardware.
 
 ## Software
 The PlatformIO development environment and Arduino framework are used, with standard Arduino libraries plus these two:
@@ -57,4 +57,4 @@ One fix is to compile the ESP software with `#define DEBUG_DISABLED`.  This caus
 
 More memory-saving details can be found at https://github.com/SignalK/SensESP/issues/239
 
-As of January 2021, the **d1_mini** runs when configured with one orientation sensor plus Signal K reports for heading, attitude, IP address, freemem, uptime, system Hz, magnetic calibration parameters, as well as monitoring one physical switch.  This is close to the maximum though, without taking extra steps such as disabing the debug messages as described above.
+As of January 2021, the **d1_mini** runs when configured with one orientation sensor plus Signal K reports for heading, attitude, IP address, freemem, uptime, system Hz, magnetic calibration parameters, as well as monitoring one physical switch.  This is close to the maximum though, without taking extra steps such as disabling the debug messages as described above.
