@@ -11,7 +11,7 @@
  *   * Attitude (yaw, pitch, roll) output
  *   * Magnetic Heading (Compass reading corrected for deviations)
  *   * Physical switch to trigger saving of magnetic calibration
- *   * Tenperature output (taken from the sensor IC and corrected)
+ *   * Temperature output (taken from the sensor IC and corrected)
  *   * Acceleration in X,Y, Z axes
  *   * Turn, Pitch, and Roll Rates
  * Some example outputs are commented out by default: read the associated
@@ -106,7 +106,7 @@ ReactESP app([]() {
    * @see https://signalk.org/specification/1.5.0/doc/vesselsBranch.html
    *
    * Vessel heading can be reported as headingCompass (uncorrected for
-   * Deviation), headingMagnetic (corrected for Devations),
+   * deviation), headingMagnetic (corrected for deviations),
    * or as part of an attitude data group (i.e. yaw, pitch, roll).
    * All three paths are defined in the Signal K spec and have default
    * display widgets in the Signal K Instrument Panel.
@@ -255,7 +255,7 @@ ReactESP app([]() {
    * build.h file (#define FUSION_HZ), currently set to 40 Hz. Fusion
    * calculations are run at that same rate. This is different than, and
    * usually faster than, the rate at which orientation parameters are output.
-   * Reportng orientation values within SensESP can happen at any desired
+   * Reporting orientation values within SensESP can happen at any desired
    * rate, though if it is more often than the fusion rate then
    * there will be duplicated values. This example uses a 10 Hz output rate.
    * It is not necessary that all the values be output at the same rate (for
