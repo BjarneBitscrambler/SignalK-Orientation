@@ -391,13 +391,13 @@ ReactESP app([]() {
   //       orientation_sensor, OrientationValues::kRateOfRoll,
   //       ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathRollRate);
   //   sensor_roll_rate->connect_to(
-  //       new SKOutputNumber(kSKPathRollRate, kConfigPathRollRate_SK));
+  //       new SKOutputNumber(kSKPathRollRate, kConfigPathRollRate_SK, metadata_rate_of_roll));
 
   //   auto* sensor_pitch_rate = new OrientationValues(
   //       orientation_sensor, OrientationValues::kRateOfPitch,
   //       ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathPitchRate);
   //   sensor_pitch_rate->connect_to(
-  //       new SKOutputNumber(kSKPathPitchRate, kConfigPathPitchRate_SK));
+  //       new SKOutputNumber(kSKPathPitchRate, kConfigPathPitchRate_SK, metadata_rate_of_pitch));
 
   // TODO - it makes sense to send all three accel values (XYZ) in
   // one SK package. The needed data structure is not yet defined in
@@ -406,7 +406,7 @@ ReactESP app([]() {
   //       orientation_sensor, OrientationValues::kAccelerationX,
   //       ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathAccelXYZ);
   //   sensor_accel_x->connect_to(
-  //       new SKOutputNumber(kSKPathAccel, kConfigPathAccelXYZ_SK));
+  //       new SKOutputNumber(kSKPathAccel, kConfigPathAccelXYZ_SK, metadata_accel));
 
   //   auto* sensor_temperature =
   //       new OrientationValues(orientation_sensor,
