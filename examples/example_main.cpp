@@ -227,6 +227,10 @@ ReactESP app([]() {
   //   const char* kConfigPathTurnRate       = "/sensors/rateOfTurn/settings";
   //   const char* kConfigPathAccelXYZ       = "/sensors/acceleration/settings";
   //   const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk";
+  //   const char *kConfigPathRollRate = "/sensors/rollRate/settings";
+  //   const char *kConfigPathRollRate_SK = "/sensors/rollRate/sk";
+  //   const char *kConfigPathPitchRate = "/sensors/pitchRate/settings";
+  //   const char *kConfigPathPitchRate_SK = "/sensors/pitchRate/sk";
   //   const char* kConfigPathTemperature    = "/sensors/temperature/settings";
   //   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
 
