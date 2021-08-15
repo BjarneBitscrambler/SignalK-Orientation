@@ -86,7 +86,7 @@ ReactESP app([]() {
    * Builder pattern (sensesp_app_builder.h), but that saves only 1880 bytes.
    */
   sensesp_app = new SensESPApp(
-      "SensESP_D1",         //name of this ESP device as sent to SignalK
+      "eCompass",           //name of this ESP device as sent to SignalK
       "mySSID",             //WiFi network SSID
       "myPassword",         //WiFi network password
       "192.168.1.4",        //IP address of network's Signal K server
