@@ -133,7 +133,7 @@ ReactESP app([]() {
    * The following SKpaths are useful when performing magnetic calibration,
    * and for confirming that the current magnetic environment of the sensor
    * is unchanged from the most recent saved calibration. None of these
-   * parameters has a defined path in Signal K, so they may be changed to suit.
+   * parameters have predefined paths in the Signal K spec, so may be changed to suit.
    * 
    * For more details and suggestions on how to perform magnetic calibration,
    * see the Wiki at
@@ -156,7 +156,7 @@ ReactESP app([]() {
    * time your sensor reports its value(s) to the server.
    */
   // Uncomment from the following example metadata as needed, or create
-  // your own as needed.
+  // your own.
   //   SKMetadata* metadata_accel = new SKMetadata();
   //   metadata_accel->description_ = "Acceleration in X,Y,Z axes";
   //   metadata_accel->display_name_ = "Accelerometer";
@@ -210,8 +210,9 @@ ReactESP app([]() {
        sensors->attitude
                        ->settings (adjusts report interval, saves mag cal)
               ->heading
-                       ->settings (adjusts report interval, saves mag cal)
-                       ->deviation      (adjusts compass deviation)
+                       ->deviation (adjusts compass deviation with Curve Interpolator)
+                       ->offset    (adjusts compass deviation with single value)
+                       ->settings  (adjusts report interval, saves mag cal)
    * 
    */
   const char* kConfigPathAttitude_SK = "";
@@ -220,8 +221,9 @@ ReactESP app([]() {
   const char* kConfigPathHeading_SKM = "";
   const char* kConfigPathHeading     = "/sensors/heading/settings";
   const char* kConfigPathHeadingDev  = "/sensors/heading/deviation";
-  // This example shows attitude and compass heading. If you want other parameters
-  // as well, uncomment and modify the appropriate path(s) from the following 
+  const char* kConfigPathHeadingOffset = "/sensors/heading/offset";
+  // The above provides a web interface for attitude and compass heading. 
+  // For other parameters, uncomment and modify the appropriate path(s) from the following 
   // or create new paths as needed.
   //   const char* kConfigPathTurnRate_SK    = "/sensors/rateOfTurn/sk";
   //   const char* kConfigPathTurnRate       = "/sensors/rateOfTurn/settings";
@@ -232,6 +234,7 @@ ReactESP app([]() {
   //   const char *kConfigPathPitchRate = "/sensors/pitchRate/settings";
   //   const char *kConfigPathPitchRate_SK = "/sensors/pitchRate/sk";
   //   const char* kConfigPathTemperature    = "/sensors/temperature/settings";
+  //   const char* kConfigPathTemperatureCal = "/sensors/temperature/calibrate";
   //   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
 
   /**
@@ -261,27 +264,49 @@ ReactESP app([]() {
    * usually faster than, the rate at which orientation parameters are output.
    * Reporting orientation values within SensESP can happen at any desired
    * rate, though if it is more often than the fusion rate then
-   * there will be duplicated values. This example uses a 10 Hz output rate.
+   * there will be duplicated values. This example uses a 10 Hz output rate, set
+   * via #define ORIENTATION_REPORTING_INTERVAL_MS. The rate may be overridden
+   * via a parameter's Value Settings->Report Interval entry in the web interface.
    * It is not necessary that all the values be output at the same rate (for
    * example, it likely makes sense to report temperature at a slower rate).
    */
   
-  // Create the Compass Heading and Magnetic Heading outputs. The difference
-  // between the two, in this example, is that the Magnetic Heading passes
-  // through a transform allowing one to correct for a fixed offset (such
-  // as occurs when the sensor's axis is not perfectly parallel with the 
-  // vessel's stern-bow axis).
+    // Create the Compass Heading and Magnetic Heading outputs. The difference
+    // between the two, in this example, is that the Compass Heading is only
+    // corrected for fixed mounting offsets (such as occurs when the sensor's 
+    // axis is not perfectly parallel with the vessel's stern-bow axis) - 
+    // Deviation corrections are not applied to the Compass Heading.
+    // Magnetic Heading, on the other hand, has passed through one or more 
+    // transforms to correct for other fixed or variable deviations. The
+    // Curve Interpolator transform accepts pairs of (input,output) values
+    // using the web interface, and uses them as a lookup table to provide 
+    // a corresponding output value for a given input value. Linear interpolation
+    // is performed when an exact input value is not found in the table. By using
+    // multiple (input,output) value pairs, one can approximate an arbitrary
+    // transform function. Note that only about 10 pairs of values are accepted
+    // by the standard SensESP Curve Interpolator; if you need more, then up
+    // to at least 37 pairs are suported by the source code at 
+    // https://github.com/BjarneBitscrambler/SensESP.git#IncreaseCurveIntPoints
+    // The relevant necessary changes are in http.cpp, configurable.cpp, and
+    // curveinterpolator.cpp  
+
   auto* sensor_heading = new OrientationValues(
       orientation_sensor, OrientationValues::kCompassHeading,
       ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathHeading);
-  sensor_heading->connect_to(
-      new SKOutputNumber(kSKPathHeadingCompass, kConfigPathHeading_SKC))
-      //pass through transform. Set initial offset to 0.0 radians.
-      ->connect_to( new AngleCorrection( 0.0, 0.0, kConfigPathHeadingDev) )
-      //an optional, more complex transform is a CurveInterpolator
-      //->connect_to( new CurveInterpolator( NULL, "/sensors/heading/Magnetic") )
-      ->connect_to(
-      new SKOutputNumber(kSKPathHeadingMagnetic, kConfigPathHeading_SKM));
+  sensor_heading
+        // Correct for mounting offsets - Pi/2 rotation in my case.
+        ->connect_to(new AngleCorrection((PI/2.0), 0.0, kConfigPathHeadingOffset))
+        ->connect_to(
+            new SKOutputNumber(kSKPathHeadingCompass, kConfigPathHeading_SKC))
+        //pass to simple deviation transform. Set initial offset to 0.0 radians.
+        ->connect_to( new AngleCorrection( 0.0, 0.0, kConfigPathHeadingDev) )
+        //an optional, more complex transform is a CurveInterpolator
+        // CurveInterpolator applies deviation corrections
+//      ->connect_to( new CurveInterpolator( NULL,kConfigPathHeadingDev) )
+        // AngleCorrection normalizes to [0..2Pi] range, when CurveInterpolator output < 0 or > 2*Pi
+        //->connect_to(new AngleCorrection(0.0, 0.0, ""))
+        ->connect_to(
+            new SKOutputNumber(kSKPathHeadingMagnetic, kConfigPathHeading_SKM));
   
   // Create the Attitude output (yaw, pitch, roll). Note that this
   // output does not pass through any transform to correct for residual
@@ -297,12 +322,12 @@ ReactESP app([]() {
    * @see https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki
    * for details on how to interpret the values. None are recognized
    * in the Signal K spec, so there is no prescribed SK path that they
-   * need to be sent to. 
-   * 
+   * need to be sent to.
+   *
    * Because there are quite a few parameters, and they are likely only
    * referred to infrequently (i.e. when calibrating, or when magnetic
    * disturbances are suspected), you may want to configure the Signal K
-   * instrument panel to display these paths on a secondary screen, 
+   * instrument panel to display these paths on a secondary screen,
    * separate from the primary navigation screen.
    */
   auto* sensor_cal_fit = new OrientationValues(
@@ -414,13 +439,12 @@ ReactESP app([]() {
 
   //   auto* sensor_temperature =
   //       new OrientationValues(orientation_sensor,
-  //       OrientationValues::kTemperature,
-  //                             1000, kConfigPathTemperature);
+  //       OrientationValues::kTemperature, 3000, kConfigPathTemperature);
   //   sensor_temperature
-  //       ->connect_to(new Linear(1.0, 0.0, "/sensors/temperature/calibrate"))
-  //  Temperature readings are passed through a linear transform
-  //  to allow for calibration/linearization via web interface. Other
-  //  transforms are available. Ensure you #include the appropriate file(s).
+  //       ->connect_to(new Linear(1.0, 0.0,kConfigPathTemperatureCal))
+  // Temperature readings are passed through a linear transform
+  // to allow for calibration/linearization via web interface. Other
+  // transforms are available. Ensure you #include the appropriate file(s).
   //       ->connect_to(new SKOutputNumber(
   //           kSKPathTemperature, kConfigPathTemperature_SK,
   //           metadata_temperature));
@@ -431,7 +455,7 @@ ReactESP app([]() {
    * and the Y-axis pointing to Port, then Z points up and the normal marine
    * conventions apply. The wiki has details:
    * @see https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki
-   * 
+   *
    * If the sensor is mounted differently, or you prefer an alternate nomenclature,
    * the Get___() methods in sensor_fusion_class.cpp can be adjusted.
   */
