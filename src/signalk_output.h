@@ -15,6 +15,8 @@
 #include "signalk/signalk_emitter.h"
 #include "transforms/transform.h"
 
+namespace sensesp {
+
 static const char SIGNALKOUTPUT_SCHEMA[] PROGMEM = R"({
       "type": "object",
       "properties": {
@@ -369,4 +371,6 @@ typedef SKOutputNumeric<int> SKOutputInt;
 typedef SKOutput<bool> SKOutputBool;
 typedef SKOutput<String> SKOutputString;
 
-#endif
+} // namespace sensesp
+
+#endif //_signalk_output_H_

@@ -10,9 +10,10 @@
 
 #include "sensor_fusion_class.h"  // for OrientationSensorFusion-ESP library
 
-#include "sensors/sensor.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/sensors/sensor.h"
 #include "signalk_orientation.h"
 
+namespace sensesp {
 /**
  * @brief OrientationSensor represents a 9-Degrees-of-Freedom sensor
  * (magnetometer, accelerometer, and gyroscope).
@@ -47,11 +48,12 @@ class OrientationSensor {
  * The three parameters are stored in an Attitude struct, and sent together
  * in one Signal K message. The units are radians.
  */
-class AttitudeValues : public AttitudeProducer, public Sensor {
+class AttitudeValues : public AttitudeProducer, public sensesp::Sensor {
  public:
   AttitudeValues(OrientationSensor* orientation_sensor,
                  uint report_interval_ms = 100, String config_path = "");
-  void enable() override final;  ///< starts periodic outputs of Attitude
+//sensESP v2 changes enable() to start()  void enable() override final;  ///< starts periodic outputs of Attitude
+  void start() override final;  ///< starts periodic outputs of Attitude
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
 
@@ -74,11 +76,12 @@ class AttitudeValues : public AttitudeProducer, public Sensor {
  * the existing magnetic calibration suits the current magnetic
  * environment.
  */
-class MagCalValues : public MagCalProducer, public Sensor {
+class MagCalValues : public MagCalProducer, public sensesp::Sensor {
  public:
   MagCalValues(OrientationSensor* orientation_sensor,
                  uint report_interval_ms = 100, String config_path = "");
-  void enable() override final;  ///< starts periodic outputs of MagCal values
+//sensESP v2 changes enable() to start()  void enable() override final;  ///< starts periodic outputs of MagCal values
+  void start() override final;  ///< starts periodic outputs of MagCal values
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
 
@@ -101,7 +104,8 @@ class MagCalValues : public MagCalProducer, public Sensor {
  * is provided by the AttitudeValues class instead of this one.
  * Create new instances in main.cpp for each parameter desired.
  */
-class OrientationValues : public NumericSensor {
+//sensESP v2 replaced NumericSensor with various sub-types  class OrientationValues : public NumericSensor {
+class OrientationValues : public FloatSensor {
  public:
   enum OrientationValType {
     kCompassHeading,      ///< compass heading, also called yaw
@@ -127,7 +131,8 @@ class OrientationValues : public NumericSensor {
   OrientationValues(OrientationSensor* orientation_sensor,
                     OrientationValType value_type = kCompassHeading,
                     uint report_interval_ms = 100, String config_path = "");
-  void enable() override final;  ///< starts periodic outputs of Attitude
+//sensESP v2 changes enable() to start()    void enable() override final;  ///< starts periodic outputs of Attitude
+  void start() override final;  ///< starts periodic outputs of Attitude
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
 
@@ -143,5 +148,7 @@ class OrientationValues : public NumericSensor {
   int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
 
 };  // end class OrientationValues
+
+} // namespace sensesp
 
 #endif  // ORIENTATION_SENSOR_H_

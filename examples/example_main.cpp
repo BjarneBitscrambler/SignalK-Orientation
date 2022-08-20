@@ -3,7 +3,7 @@
  * This file provides examples for using the Orientation library together
  * with SensESP to report vessel orientation data to a Signal K server.
  * 
- * Intended hardware is an ESP32 or ESP8266 platform and an FXOS8700/FXAS21002
+ * Intended hardware is an ESP32 platform and an FXOS8700/FXAS21002
  * combination accelerometer/magnetometer/gyroscope.
  * 
  * The examples include:
@@ -24,16 +24,20 @@
 #include <sstream>
 #include <string>
 
-#include "sensesp_app.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/sensors/analog_input.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/sensors/sensor.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/signalk/signalk_output.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp_app_builder.h"
+
 #include "orientation_sensor.h"
-#include "signalk_output.h"
+
 /**
  * If using a button-press to save Magnetic Calibration, then include
  * digital_input.h, lambda_consumer.h, and debounce.h
  */
-#include "sensors/digital_input.h"
-#include "system/lambda_consumer.h"
-#include "transforms/debounce.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/sensors/digital_input.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/system/lambda_consumer.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/transforms/debounce.h"
 /**
  * If wanting to correct compass readings for mounting offsets or
  * residual deviations after magnetic calibration, then need either
@@ -41,13 +45,13 @@
  * or a curve interpolator transform (which provides interpolation
  * to a user-supplied set of points).
  */
-#include "transforms/angle_correction.h"
-#include "transforms/curveinterpolator.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/transforms/angle_correction.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/transforms/curveinterpolator.h"
 /**
  * If using the Temperature report, then include the linear transform
  * for calibrating the temperature readings.
  */
-//#include "transforms/linear.h"
+#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/transforms/linear.h"
 
 // Sensor hardware details: I2C addresses and pins       
 #define BOARD_ACCEL_MAG_I2C_ADDR    (0x1F) ///< I2C address on Adafruit breakout board
@@ -69,15 +73,29 @@
 // interface), that overrides the following #define for that report.
 #define ORIENTATION_REPORTING_INTERVAL_MS (100)
 
+using namespace sensesp;
+
+reactesp::ReactESP app;
 // SensESP builds upon the ReactESP framework. Every ReactESP application
 // defines an "app" object vs defining a "main()" method.
-ReactESP app([]() {
 
-// Setup Serial port, and enable debug prints if in debug mode
+// The setup function performs one-time application initialization.
+void setup() {
 #ifndef SERIAL_DEBUG_DISABLED
   SetupSerialDebug(115200);
 #endif
 
+  // Construct the global SensESPApp() object
+  SensESPAppBuilder builder;
+  sensesp_app = (&builder)
+                    // Set a custom hostname for the app.
+                    ->set_hostname("eCompass")
+                    // Optionally, hard-code the WiFi and Signal K server
+                    // settings.
+                    ->set_wifi("mySSID", "myPassword")
+                    ->set_sk_server("10.0.0.4", 3000) //my SK server IP address and port
+                    ->enable_uptime_sensor()
+                    ->get_app();
   /**
    * Create the global SensESPApp() object.
    * By passing the WiFi setup details in the constructor, rather than
@@ -85,12 +103,6 @@ ReactESP app([]() {
    * 2496 bytes of heap memory (RAM). Another alternative is to use the
    * Builder pattern (sensesp_app_builder.h), but that saves only 1880 bytes.
    */
-  sensesp_app = new SensESPApp(
-      "eCompass",           //name of this ESP device as sent to SignalK
-      "mySSID",             //WiFi network SSID
-      "myPassword",         //WiFi network password
-      "192.168.1.4",        //IP address of network's Signal K server
-      3000);                //port on which to connect to Signal K server
 
   /**
    * The "SignalK path" identifies this sensor to the Signal K server. Leaving
@@ -113,7 +125,7 @@ ReactESP app([]() {
    */
   const char* kSKPathHeadingCompass  = "navigation.headingCompass";
   const char* kSKPathHeadingMagnetic = "navigation.headingMagnetic";
-  const char* kSKPathAttitude        = "navigation.attitude";
+  // const char* kSKPathAttitude        = "navigation.attitude";
   /**
    * This example reports heading, pitch, and roll. If you want other parameters
    * as well, uncomment the appropriate SKpath(s) from the following.
@@ -123,11 +135,11 @@ ReactESP app([]() {
    * Replace ecompass with a different zone if desired.
    * Signal K v1.5 does not describe a path for acceleration.
    */
-  //const char* kSKPathTurnRate    = "navigation.rateOfTurn";
+  const char* kSKPathTurnRate    = "navigation.rateOfTurn";
   //const char* kSKPathRollRate    = "navigation.rateOfRoll";
   //const char* kSKPathPitchRate   = "navigation.rateOfPitch";
-  //const char* kSKPathTemperature =
-  //               "environment.inside.ecompass.temperature";
+  const char* kSKPathTemperature =
+                 "environment.inside.ecompass.temperature";
   //const char* kSKPathAccel       = "sensors.accelerometer.accel_xyz";
   /**
    * The following SKpaths are useful when performing magnetic calibration,
@@ -145,7 +157,7 @@ ReactESP app([]() {
   //const char* kSKPathMagInclination  = "orientation.calibration.maginclination";
   //const char* kSKPathMagBValue      = "orientation.calibration.magmagnitude";
   //const char* kSKPathMagBValueTrial = "orientation.calibration.magmagnitudetrial";
-  //const char* kSKPathMagNoise       = "orientation.calibration.magnoise";
+  const char* kSKPathMagNoise       = "orientation.calibration.magnoise";
   //const char* kSKPathMagCalValues   = "orientation.calibration.magvalues";
 
   /**
@@ -177,12 +189,12 @@ ReactESP app([]() {
   //   metadata_rate_of_pitch->short_name_ = "Pitch Rate";
   //   metadata_rate_of_pitch->units_ = "rad/s";
   //
-  //   SKMetadata* metadata_temperature = new SKMetadata();
-  //   metadata_temperature->description_ =
-  //        "Temperature reported by orientation sensor";
-  //   metadata_temperature->display_name_ = "Temperature at eCompass";
-  //   metadata_temperature->short_name_ = "Temp";
-  //   metadata_temperature->units_ = "K";
+     SKMetadata* metadata_temperature = new SKMetadata();
+     metadata_temperature->description_ =
+          "Temperature reported by orientation sensor";
+     metadata_temperature->display_name_ = "Temperature at eCompass";
+     metadata_temperature->short_name_ = "Temp";
+     metadata_temperature->units_ = "K";
 
   /**
    * The "Configuration path" is combined with "/config" to formulate a URL
@@ -215,8 +227,8 @@ ReactESP app([]() {
                        ->settings  (adjusts report interval, saves mag cal)
    * 
    */
-  const char* kConfigPathAttitude_SK = "";
-  const char* kConfigPathAttitude    = "/sensors/attitude/settings";
+  // const char* kConfigPathAttitude_SK = "";
+  // const char* kConfigPathAttitude    = "/sensors/attitude/settings";
   const char* kConfigPathHeading_SKC = "";
   const char* kConfigPathHeading_SKM = "";
   const char* kConfigPathHeading     = "/sensors/heading/settings";
@@ -225,17 +237,17 @@ ReactESP app([]() {
   // The above provides a web interface for attitude and compass heading. 
   // For other parameters, uncomment and modify the appropriate path(s) from the following 
   // or create new paths as needed.
-  //   const char* kConfigPathTurnRate_SK    = "/sensors/rateOfTurn/sk";
-  //   const char* kConfigPathTurnRate       = "/sensors/rateOfTurn/settings";
+  const char* kConfigPathTurnRate_SK    = "";
+  const char* kConfigPathTurnRate       = "";
   //   const char* kConfigPathAccelXYZ       = "/sensors/acceleration/settings";
   //   const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk";
   //   const char *kConfigPathRollRate = "/sensors/rollRate/settings";
   //   const char *kConfigPathRollRate_SK = "/sensors/rollRate/sk";
   //   const char *kConfigPathPitchRate = "/sensors/pitchRate/settings";
   //   const char *kConfigPathPitchRate_SK = "/sensors/pitchRate/sk";
-  //   const char* kConfigPathTemperature    = "/sensors/temperature/settings";
-  //   const char* kConfigPathTemperatureCal = "/sensors/temperature/calibrate";
-  //   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
+  const char* kConfigPathTemperature    = "/sensors/temperature/settings";
+  const char* kConfigPathTemperatureCal = "/sensors/temperature/calibrate";
+  const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
 
   /**
    * Create and initialize the Orientation data source.
@@ -270,7 +282,7 @@ ReactESP app([]() {
    * It is not necessary that all the values be output at the same rate (for
    * example, it likely makes sense to report temperature at a slower rate).
    */
-  
+
     // Create the Compass Heading and Magnetic Heading outputs. The difference
     // between the two, in this example, is that the Compass Heading is only
     // corrected for fixed mounting offsets (such as occurs when the sensor's 
@@ -297,25 +309,25 @@ ReactESP app([]() {
         // Correct for mounting offsets - Pi/2 rotation in my case.
         ->connect_to(new AngleCorrection((PI/2.0), 0.0, kConfigPathHeadingOffset))
         ->connect_to(
-            new SKOutputNumber(kSKPathHeadingCompass, kConfigPathHeading_SKC))
+            new SKOutputFloat(kSKPathHeadingCompass, kConfigPathHeading_SKC))
         //pass to simple deviation transform. Set initial offset to 0.0 radians.
-        ->connect_to( new AngleCorrection( 0.0, 0.0, kConfigPathHeadingDev) )
+//      ->connect_to( new AngleCorrection( 0.0, 0.0, kConfigPathHeadingDev) )
         //an optional, more complex transform is a CurveInterpolator
         // CurveInterpolator applies deviation corrections
-//      ->connect_to( new CurveInterpolator( NULL,kConfigPathHeadingDev) )
+        ->connect_to( new CurveInterpolator( NULL,kConfigPathHeadingDev) )
         // AngleCorrection normalizes to [0..2Pi] range, when CurveInterpolator output < 0 or > 2*Pi
-        //->connect_to(new AngleCorrection(0.0, 0.0, ""))
+        ->connect_to(new AngleCorrection(0.0, 0.0, ""))
         ->connect_to(
-            new SKOutputNumber(kSKPathHeadingMagnetic, kConfigPathHeading_SKM));
-  
+            new SKOutputFloat(kSKPathHeadingMagnetic, kConfigPathHeading_SKM));
+
   // Create the Attitude output (yaw, pitch, roll). Note that this
   // output does not pass through any transform to correct for residual
   // deviation due to e.g. mounting offsets.
-  auto* sensor_attitude = new AttitudeValues(
-      orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS,
-      kConfigPathAttitude);
-  sensor_attitude->connect_to(
-      new SKOutputAttitude(kSKPathAttitude, kConfigPathAttitude_SK));
+//  auto* sensor_attitude = new AttitudeValues(
+//      orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS,
+//      kConfigPathAttitude);
+//  sensor_attitude->connect_to(
+//      new SKOutputAttitude(kSKPathAttitude, kConfigPathAttitude_SK));
 
   /**
    * The following outputs are useful when calibrating. See the wiki at
@@ -332,21 +344,21 @@ ReactESP app([]() {
    */
   auto* sensor_cal_fit = new OrientationValues(
       orientation_sensor, OrientationValues::kMagCalFitInUse,
-      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+      ORIENTATION_REPORTING_INTERVAL_MS * 39, "");
   sensor_cal_fit->connect_to(
-      new SKOutputNumber(kSKPathMagFit, ""));
+      new SKOutputFloat(kSKPathMagFit, ""));
 
   auto* sensor_cal_candidate = new OrientationValues(
       orientation_sensor, OrientationValues::kMagCalFitTrial,
-      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+      ORIENTATION_REPORTING_INTERVAL_MS * 19, "");
   sensor_cal_candidate->connect_to(
-      new SKOutputNumber(kSKPathMagFitTrial, ""));
+      new SKOutputFloat(kSKPathMagFitTrial, ""));
 
   auto* sensor_cal_order = new OrientationValues(
       orientation_sensor, OrientationValues::kMagCalAlgorithmSolver,
-      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+      ORIENTATION_REPORTING_INTERVAL_MS * 99, "");
   sensor_cal_order->connect_to(
-      new SKOutputNumber(kSKPathMagSolver, ""));
+      new SKOutputFloat(kSKPathMagSolver, ""));
 
   // auto* sensor_mag_inclination = new OrientationValues(
   //     orientation_sensor, OrientationValues::kMagInclination,
@@ -366,11 +378,11 @@ ReactESP app([]() {
   // sensor_mag_b_value_trial->connect_to(
   //     new SKOutputNumber(kSKPathMagBValueTrial, ""));
 
-  // auto* sensor_mag_noise = new OrientationValues(
-  //     orientation_sensor, OrientationValues::kMagNoiseCovariance,
-  //     ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-  // sensor_mag_noise->connect_to(
-  //     new SKOutputNumber(kSKPathMagNoise, ""));
+   auto* sensor_mag_noise = new OrientationValues(
+       orientation_sensor, OrientationValues::kMagNoiseCovariance,
+       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+   sensor_mag_noise->connect_to(
+       new SKOutputFloat(kSKPathMagNoise, ""));
 
   // This report is a consolidation of all the above magnetic cal
   // values and will need a custom instrument to display.
@@ -387,9 +399,12 @@ ReactESP app([]() {
   // Monitor a button every read_interval ms for CHANGEs in state.
   // No web interface path is supplied, so interval won't be adjustable.
   // Note INPUT_PULLUP may need to change depending on how button is wired.
-  const int kReadInterval = 100;
+//  const uint kReadInterval = 100;
+//  String testpath = "somepath";  
+//  auto* button_watcher = new DigitalInputChange(
+//      PIN_SWITCH_CAL_SAVE, INPUT_PULLUP, kReadInterval, testpath);
   auto* button_watcher = new DigitalInputChange(
-      PIN_SWITCH_CAL_SAVE, INPUT_PULLUP, CHANGE, kReadInterval, "");
+      PIN_SWITCH_CAL_SAVE, INPUT_PULLUP, CHANGE, "");
   // Create a debounce transform, also with no web interface.
   const int kDebounceDelay = 350; // only react to pushes >350 ms + kReadInterval
   auto* debounce = new DebounceInt(kDebounceDelay, "");
@@ -403,18 +418,18 @@ ReactESP app([]() {
   };
   auto* button_consumer = new LambdaConsumer<int>(save_mcal_function);
   // Connect the button -> debounce -> save magnetic calibration fcn
-  button_watcher->connect_to(debounce)->connect_to(button_consumer);
+  button_watcher->connect_to(debounce)->connect_to(button_consumer); 
   /**
    * End of physical switch section.
    */
 
   // This example reports attitude and heading. If you want other parameters
   // as well, uncomment the appropriate connections from the following.
-  //   auto* sensor_turn_rate = new OrientationValues(
-  //       orientation_sensor, OrientationValues::kRateOfTurn,
-  //       ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathTurnRate);
-  //   sensor_turn_rate->connect_to(
-  //       new SKOutputNumber(kSKPathTurnRate, kConfigPathTurnRate_SK));
+  auto* sensor_turn_rate = new OrientationValues(
+        orientation_sensor, OrientationValues::kRateOfTurn,
+        ORIENTATION_REPORTING_INTERVAL_MS * 4, kConfigPathTurnRate);
+  sensor_turn_rate->connect_to(
+        new SKOutputFloat(kSKPathTurnRate, kConfigPathTurnRate_SK));
 
   //   auto* sensor_roll_rate = new OrientationValues(
   //       orientation_sensor, OrientationValues::kRateOfRoll,
@@ -437,17 +452,17 @@ ReactESP app([]() {
   //   sensor_accel_x->connect_to(
   //       new SKOutputNumber(kSKPathAccel, kConfigPathAccelXYZ_SK, metadata_accel));
 
-  //   auto* sensor_temperature =
-  //       new OrientationValues(orientation_sensor,
-  //       OrientationValues::kTemperature, 3000, kConfigPathTemperature);
-  //   sensor_temperature
-  //       ->connect_to(new Linear(1.0, 0.0,kConfigPathTemperatureCal))
+  auto* sensor_temperature =
+      new OrientationValues(orientation_sensor,
+      OrientationValues::kTemperature, 3001, kConfigPathTemperature);
+  sensor_temperature
+        ->connect_to(new Linear(1.0, 0.0,kConfigPathTemperatureCal))
   // Temperature readings are passed through a linear transform
   // to allow for calibration/linearization via web interface. Other
   // transforms are available. Ensure you #include the appropriate file(s).
-  //       ->connect_to(new SKOutputNumber(
-  //           kSKPathTemperature, kConfigPathTemperature_SK,
-  //           metadata_temperature));
+        ->connect_to(new SKOutputFloat(
+            kSKPathTemperature, kConfigPathTemperature_SK,
+            metadata_temperature));
 
   /**
    *  Relationship of the Axes and the terminology:
@@ -460,6 +475,14 @@ ReactESP app([]() {
    * the Get___() methods in sensor_fusion_class.cpp can be adjusted.
   */
 
-  // Start the SensESP application running
-  sensesp_app->enable();
-});
+  // Start networking, SK server connections and other SensESP internals
+  sensesp_app->start();
+
+}//end setup()
+
+// execute the previously-setup sensor reading and reporting
+void loop() 
+{ app.tick(); 
+}//end loop()
+
+

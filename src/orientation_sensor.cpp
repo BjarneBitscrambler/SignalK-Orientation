@@ -4,10 +4,12 @@
 
 #include "orientation_sensor.h"
 
-#include <RemoteDebug.h>
+//#include <RemoteDebug.h>
 
 #include "sensesp.h"
 
+namespace sensesp {
+  
 /**
  * @brief Constructor sets up the I2C communications to the sensor and
  * initializes the sensor fusion library.
@@ -49,7 +51,7 @@ OrientationSensor::OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
     // called.
     const uint32_t kFusionIntervalMs = 1000.0 / FUSION_HZ;
     // Start periodic reads of sensor and running of fusion algorithm.
-    app.onRepeat(kFusionIntervalMs,
+    ReactESP::app->onRepeat(kFusionIntervalMs,
                  [this]() { this->ReadAndProcessSensors(); });
   }
 
@@ -84,11 +86,11 @@ AttitudeValues::AttitudeValues(OrientationSensor* orientation_sensor,
 /**
  * @brief Starts periodic output of Attitude parameters.
  *
- * The enable() function is inherited from Sensor::, and is
+ * The start() function is inherited from sensesp::Sensor, and is
  * automatically called when the SensESP app starts.
  */
-void AttitudeValues::enable() {
-  app.onRepeat(report_interval_ms_, [this]() { this->Update(); });
+void AttitudeValues::start() {
+  ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
 }
 
 /**
@@ -200,11 +202,11 @@ MagCalValues::MagCalValues(OrientationSensor* orientation_sensor,
 /**
  * @brief Starts periodic output of MagCal parameters.
  *
- * The enable() function is inherited from Sensor::, and is
+ * The start() function is inherited from sensesp::Sensor, and is
  * automatically called when the SensESP app starts.
  */
-void MagCalValues::enable() {
-  app.onRepeat(report_interval_ms_, [this]() { this->Update(); });
+void MagCalValues::start() {
+  ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
 }
 
 /**
@@ -295,7 +297,7 @@ bool MagCalValues::set_configuration(const JsonObject& config) {
 OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
                                      OrientationValType val_type,
                                      uint report_interval_ms, String config_path)
-    : NumericSensor(config_path),
+    : FloatSensor(config_path),
       orientation_sensor_{orientation_sensor},
       value_type_{val_type},
       report_interval_ms_{report_interval_ms} {
@@ -307,11 +309,11 @@ OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
 /**
  * @brief Starts periodic output of orientation parameter.
  *
- * The enable() function is inherited from Sensor::, and is
+ * The start() function is inherited from sensesp::Sensor, and is
  * automatically called when the SensESP app starts.
  */
-void OrientationValues::enable() {
-  app.onRepeat(report_interval_ms_, [this]() { this->Update(); });
+void OrientationValues::start() {
+  ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
 }
 
 /**
@@ -430,3 +432,5 @@ bool OrientationValues::set_configuration(const JsonObject& config) {
   save_mag_cal_ = config["save_mag_cal"];
   return true;
 }
+
+} //namespace sensesp
