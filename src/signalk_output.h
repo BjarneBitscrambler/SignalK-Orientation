@@ -3,17 +3,16 @@
  * Calibration parameters. This file replaces one of the same name in SensESP to
  * add functionality for passing Attitude structs between Value Producers and
  * Consumers. It also defines the JSON output container for the Attitude data in
- * accordance with the Signal K specification v1.50
+ * accordance with the Signal K specification v1.70
  */
 
 #ifndef _signalk_output_H_
 #define _signalk_output_H_
 
-#include <RemoteDebug.h>
 
 #include "signalk_orientation.h"
-#include "signalk/signalk_emitter.h"
-#include "transforms/transform.h"
+#include "sensesp/signalk/signalk_emitter.h"
+#include "sensesp/transforms/transform.h"
 
 namespace sensesp {
 
@@ -35,34 +34,31 @@ class SKOutput : public SKEmitter, public SymmetricTransform<T> {
 
   /**
    * The constructor
-   * @param sk_path The Signal K path the output value of this transform is sent on
-   * @param config_path The optional configuration path that allows an end user to
-   *   change the configuration of this object. See the Configurable class for more information.
-   * @param meta Optional metadata that is associated with the value output by this class
-   *   A value specified here will cause the path's metadata to be emitted on the first
-   *   delta sent to the server. Use NULL if this path has no metadata to report (or
-   *   if the path is already an official part of the Signal K specification)
+   * @param sk_path The Signal K path the output value of this transform is sent
+   * on
+   * @param config_path The optional configuration path that allows an end user
+   * to change the configuration of this object. See the Configurable class for
+   * more information.
+   * @param meta Optional metadata that is associated with the value output by
+   * this class A value specified here will cause the path's metadata to be
+   * emitted on the first delta sent to the server. Use NULL if this path has no
+   * metadata to report (or if the path is already an official part of the
+   * Signal K specification)
    */
   SKOutput(String sk_path, String config_path = "", SKMetadata* meta = NULL)
       : SKEmitter(sk_path), SymmetricTransform<T>(config_path), meta_{meta} {
-    Enable::set_priority(-5);
+    Startable::set_start_priority(-5);
     this->load_configuration();
   }
 
-
-  SKOutput(String sk_path, SKMetadata* meta) :
-    SKOutput(sk_path, "", meta) {}
-
+  SKOutput(String sk_path, SKMetadata* meta) : SKOutput(sk_path, "", meta) {}
 
   virtual void set_input(T new_value, uint8_t input_channel = 0) override {
     this->ValueProducer<T>::emit(new_value);
   }
 
   virtual String as_signalk() override {
-    // json_doc size estimated using https://arduinojson.org/v6/assistant/ and
-    // assuming sk_path length of 66 chars, yields minimum size = 98 and
-    // recommended size = 128.  Double it in case output is a long-ish string.
-    DynamicJsonDocument json_doc(256);
+    DynamicJsonDocument json_doc(1024);
     String json;
     json_doc["path"] = this->get_sk_path();
     json_doc["value"] = ValueProducer<T>::output;
@@ -133,7 +129,7 @@ class SKOutput<Attitude> : public SKEmitter,
       : SKEmitter(sk_path),
         SymmetricTransform<Attitude>(config_path),
         meta_{meta} {
-    Enable::set_priority(-5);
+    Startable::set_start_priority(-5);
     this->load_configuration();
   }
 
@@ -246,7 +242,7 @@ class SKOutput<MagCal> : public SKEmitter,
       : SKEmitter(sk_path),
         SymmetricTransform<MagCal>(config_path),
         meta_{meta} {
-    Enable::set_priority(-6);
+    Startable::set_start_priority(-6);
     this->load_configuration();
   }
 
@@ -347,12 +343,11 @@ template <typename T>
 class SKOutputNumeric : public SKOutput<T> {
 
    public:
-      SKOutputNumeric(String sk_path, String config_path = "", SKMetadata* meta = NULL);
+  SKOutputNumeric(String sk_path, String config_path = "",
+                  SKMetadata* meta = NULL);
 
-
-      SKOutputNumeric(String sk_path, SKMetadata* meta) :
-        SKOutputNumeric(sk_path, "", meta) {}
-
+  SKOutputNumeric(String sk_path, SKMetadata* meta)
+      : SKOutputNumeric(sk_path, "", meta) {}
 
       /// The Signal K specification requires that numeric values sent
       /// to the server should at minimum specify a "units". This
@@ -361,12 +356,11 @@ class SKOutputNumeric : public SKOutput<T> {
       /// @param units The unit value for the number this outputs on the specified
       ///  Signal K path. See https://github.com/SignalK/specification/blob/master/schemas/definitions.json#L87
       ///   
-      /// @see SKMetadata
-      SKOutputNumeric(String sk_path, String config_path, String units) :
-         SKOutputNumeric(sk_path, config_path, new SKMetadata(units)) {}
+  SKOutputNumeric(String sk_path, String config_path, String units)
+      : SKOutputNumeric(sk_path, config_path, new SKMetadata(units)) {}
 };
 
-typedef SKOutputNumeric<float> SKOutputNumber;
+typedef SKOutputNumeric<float> SKOutputFloat;
 typedef SKOutputNumeric<int> SKOutputInt;
 typedef SKOutput<bool> SKOutputBool;
 typedef SKOutput<String> SKOutputString;

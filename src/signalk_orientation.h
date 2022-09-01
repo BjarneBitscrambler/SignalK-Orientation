@@ -5,7 +5,7 @@
 #ifndef _signalk_orientation_H_
 #define _signalk_orientation_H_
 
-#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/system/valueproducer.h"
+#include "sensesp/system/valueproducer.h"
 
 namespace sensesp {
 /**

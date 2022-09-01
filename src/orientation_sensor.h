@@ -10,7 +10,7 @@
 
 #include "sensor_fusion_class.h"  // for OrientationSensorFusion-ESP library
 
-#include "../.pio/libdeps/esp32dev/SensESP/src/sensesp/sensors/sensor.h"
+#include "sensesp/sensors/sensor.h"
 #include "signalk_orientation.h"
 
 namespace sensesp {

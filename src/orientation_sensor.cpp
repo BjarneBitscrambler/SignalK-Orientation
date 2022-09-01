@@ -4,8 +4,6 @@
 
 #include "orientation_sensor.h"
 
-//#include <RemoteDebug.h>
-
 #include "sensesp.h"
 
 namespace sensesp {

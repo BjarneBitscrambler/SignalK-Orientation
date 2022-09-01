@@ -77,9 +77,9 @@ reactesp::ReactESP app;
 
 // setup() performs one-time application initialization.
 void setup() {
-#ifndef SERIAL_DEBUG_DISABLED
-  SetupSerialDebug(115200);
-#endif
+  #ifndef SERIAL_DEBUG_DISABLED
+    SetupSerialDebug(115200);
+  #endif
 
   /**
    * Create the global SensESPApp() object.
@@ -99,9 +99,9 @@ void setup() {
                     //  Optionally enable them here to output their values in SK reports.
                     ->enable_uptime_sensor()
                     ->enable_ip_address_sensor()
-//                    ->enable_free_mem_sensor()
-//                    ->enable_system_hz_sensor()
-//                    ->enable_wifi_signal_sensor()
+                    ->enable_free_mem_sensor()
+                    ->enable_system_hz_sensor()
+                    ->enable_wifi_signal_sensor()
                     ->get_app();
 
   /**
@@ -133,8 +133,8 @@ void setup() {
    * so these are provided using the same pattern as for rateOfTurn.
    */
   const char* kSKPathTurnRate    = "navigation.rateOfTurn";
-//  const char* kSKPathRollRate    = "navigation.rateOfRoll";
-//  const char* kSKPathPitchRate   = "navigation.rateOfPitch";
+  const char* kSKPathRollRate    = "navigation.rateOfRoll";
+  const char* kSKPathPitchRate   = "navigation.rateOfPitch";
   /**
    * Signal K v1.7 says path for temperature can include zone.
    * Replace ecompass with a different zone if desired.
@@ -159,11 +159,11 @@ void setup() {
   const char* kSKPathMagFit          = "orientation.calibration.magfit";
   const char* kSKPathMagFitTrial     = "orientation.calibration.magfittrial";
   const char* kSKPathMagSolver       = "orientation.calibration.magsolver";
-  //const char* kSKPathMagInclination  = "orientation.calibration.maginclination";
-  //const char* kSKPathMagBValue      = "orientation.calibration.magmagnitude";
-  //const char* kSKPathMagBValueTrial = "orientation.calibration.magmagnitudetrial";
+  const char* kSKPathMagInclination  = "orientation.calibration.maginclination";
+  const char* kSKPathMagBValue      = "orientation.calibration.magmagnitude";
+  const char* kSKPathMagBValueTrial = "orientation.calibration.magmagnitudetrial";
   const char* kSKPathMagNoise       = "orientation.calibration.magnoise";
-  //const char* kSKPathMagCalValues   = "orientation.calibration.magvalues";
+  const char* kSKPathMagCalValues   = "orientation.calibration.magvalues";
 
   /**
    * If you are creating a new Signal K path that does not
@@ -175,26 +175,26 @@ void setup() {
    * Uncomment from the following example metadata as needed, or create
    * your own.
    */
-  //   SKMetadata* metadata_accel = new SKMetadata();
-  //   metadata_accel->description_ = "Acceleration in X,Y,Z axes";
-  //   metadata_accel->display_name_ = "Accelerometer";
-  //   metadata_accel->short_name_ = "Accel";
-  //   metadata_accel->units_ = "m/s^2";
-  //
-  //   SKMetadata* metadata_rate_of_roll = new SKMetadata();
-  //   metadata_rate_of_roll->description_ =
-  //        "Rate of Roll about bow-stern axis";
-  //   metadata_rate_of_roll->display_name_ = "Roll Rate";
-  //   metadata_rate_of_roll->short_name_ = "Roll Rate";
-  //   metadata_rate_of_roll->units_ = "rad/s";
-  //
-  //   SKMetadata* metadata_rate_of_pitch = new SKMetadata();
-  //   metadata_rate_of_pitch->description_ =
-  //        "Rate of Pitch about port-starboard axis";
-  //   metadata_rate_of_pitch->display_name_ = "Pitch Rate";
-  //   metadata_rate_of_pitch->short_name_ = "Pitch Rate";
-  //   metadata_rate_of_pitch->units_ = "rad/s";
-  //
+     SKMetadata* metadata_accel = new SKMetadata();
+     metadata_accel->description_ = "Acceleration in X,Y,Z axes";
+     metadata_accel->display_name_ = "Accelerometer";
+     metadata_accel->short_name_ = "Accel";
+     metadata_accel->units_ = "m/s^2";
+  
+     SKMetadata* metadata_rate_of_roll = new SKMetadata();
+     metadata_rate_of_roll->description_ =
+          "Rate of Roll about bow-stern axis";
+     metadata_rate_of_roll->display_name_ = "Roll Rate";
+     metadata_rate_of_roll->short_name_ = "Roll Rate";
+     metadata_rate_of_roll->units_ = "rad/s";
+  
+     SKMetadata* metadata_rate_of_pitch = new SKMetadata();
+     metadata_rate_of_pitch->description_ =
+          "Rate of Pitch about port-starboard axis";
+     metadata_rate_of_pitch->display_name_ = "Pitch Rate";
+     metadata_rate_of_pitch->short_name_ = "Pitch Rate";
+     metadata_rate_of_pitch->units_ = "rad/s";
+  
      SKMetadata* metadata_temperature = new SKMetadata();
      metadata_temperature->description_ =
           "Temperature reported by orientation sensor";
@@ -233,8 +233,8 @@ void setup() {
                        ->settings  (adjusts report interval, saves mag cal)
    * 
    */
-  // const char* kConfigPathAttitude_SK = "";
-  // const char* kConfigPathAttitude    = "/sensors/attitude/settings";
+   const char* kConfigPathAttitude_SK = "";
+   const char* kConfigPathAttitude    = "/sensors/attitude/settings";
   const char* kConfigPathHeading_SKC = "";
   const char* kConfigPathHeading_SKM = "";
   const char* kConfigPathHeading     = "/sensors/heading/settings";
@@ -246,12 +246,12 @@ void setup() {
    */
   const char* kConfigPathTurnRate_SK    = "";
   const char* kConfigPathTurnRate       = "";
-  //   const char* kConfigPathAccelXYZ       = "/sensors/acceleration/settings";
-  //   const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk";
-  //   const char *kConfigPathRollRate = "/sensors/rollRate/settings";
-  //   const char *kConfigPathRollRate_SK = "/sensors/rollRate/sk";
-  //   const char *kConfigPathPitchRate = "/sensors/pitchRate/settings";
-  //   const char *kConfigPathPitchRate_SK = "/sensors/pitchRate/sk";
+     const char* kConfigPathAccelXYZ       = "/sensors/acceleration/settings";
+     const char* kConfigPathAccelXYZ_SK    = "/sensors/acceleration/sk";
+     const char *kConfigPathRollRate = "/sensors/rollRate/settings";
+     const char *kConfigPathRollRate_SK = "/sensors/rollRate/sk";
+     const char *kConfigPathPitchRate = "/sensors/pitchRate/settings";
+     const char *kConfigPathPitchRate_SK = "/sensors/pitchRate/sk";
   const char* kConfigPathTemperature    = "/sensors/temperature/settings";
   const char* kConfigPathTemperatureCal = "/sensors/temperature/calibrate";
   const char* kConfigPathTemperature_SK = "/sensors/temperature/sk";
@@ -341,11 +341,11 @@ void setup() {
    * output does not pass through any transform to correct for residual
    * deviation due to e.g. mounting offsets.
    */
-//  auto* sensor_attitude = new AttitudeValues(
-//      orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS,
-//      kConfigPathAttitude);
-//  sensor_attitude->connect_to(
-//      new SKOutputAttitude(kSKPathAttitude, kConfigPathAttitude_SK));
+  auto* sensor_attitude = new AttitudeValues(
+      orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS,
+      kConfigPathAttitude);
+  sensor_attitude->connect_to(
+      new SKOutputAttitude(kSKPathAttitude, kConfigPathAttitude_SK));
 
   /**
    * The following outputs are useful when calibrating. See the wiki at
@@ -378,37 +378,37 @@ void setup() {
   sensor_cal_order->connect_to(
       new SKOutputFloat(kSKPathMagSolver, ""));
 
-//   auto* sensor_mag_inclination = new OrientationValues(
-//       orientation_sensor, OrientationValues::kMagInclination,
-//       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-//   sensor_mag_inclination->connect_to(
-//       new SKOutputFloat(kSKPathMagInclination, ""));
-
-//   auto* sensor_mag_b_value = new OrientationValues(
-//       orientation_sensor, OrientationValues::kMagFieldMagnitude,
-//       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-//   sensor_mag_b_value->connect_to(
-//       new SKOutputFloat(kSKPathMagBValue, ""));
-
-//   auto* sensor_mag_b_value_trial = new OrientationValues(
-//       orientation_sensor, OrientationValues::kMagFieldMagnitudeTrial,
-//       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-//   sensor_mag_b_value_trial->connect_to(
-//       new SKOutputFloat(kSKPathMagBValueTrial, ""));
-
-   auto* sensor_mag_noise = new OrientationValues(
-       orientation_sensor, OrientationValues::kMagNoiseCovariance,
+   auto* sensor_mag_inclination = new OrientationValues(
+       orientation_sensor, OrientationValues::kMagInclination,
        ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-   sensor_mag_noise->connect_to(
-       new SKOutputFloat(kSKPathMagNoise, ""));
+   sensor_mag_inclination->connect_to(
+       new SKOutputFloat(kSKPathMagInclination, ""));
+
+   auto* sensor_mag_b_value = new OrientationValues(
+       orientation_sensor, OrientationValues::kMagFieldMagnitude,
+       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+   sensor_mag_b_value->connect_to(
+       new SKOutputFloat(kSKPathMagBValue, ""));
+
+   auto* sensor_mag_b_value_trial = new OrientationValues(
+       orientation_sensor, OrientationValues::kMagFieldMagnitudeTrial,
+       ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+   sensor_mag_b_value_trial->connect_to(
+       new SKOutputFloat(kSKPathMagBValueTrial, ""));
+
+  auto* sensor_mag_noise = new OrientationValues(
+      orientation_sensor, OrientationValues::kMagNoiseCovariance,
+      ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+  sensor_mag_noise->connect_to(
+      new SKOutputFloat(kSKPathMagNoise, ""));
 
   /* This report is a consolidation of all the above magnetic cal
    * values and will need a custom instrument to display.
    */
-//   auto* sensor_mag_cal = new MagCalValues(
-//       orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
-//   sensor_mag_cal->connect_to(
-//       new SKOutputMagCal(kSKPathMagCalValues, ""));
+   auto* sensor_mag_cal = new MagCalValues(
+       orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS * 10, "");
+   sensor_mag_cal->connect_to(
+       new SKOutputMagCal(kSKPathMagCalValues, ""));
 
   /**
    * Following section monitors a physical switch that, when pressed,
@@ -448,28 +448,28 @@ void setup() {
   sensor_turn_rate->connect_to(
         new SKOutputFloat(kSKPathTurnRate, kConfigPathTurnRate_SK));
 
-//     auto* sensor_roll_rate = new OrientationValues(
-//         orientation_sensor, OrientationValues::kRateOfRoll,
-//         ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathRollRate);
-//     sensor_roll_rate->connect_to(
-//         new SKOutputFloat(kSKPathRollRate, kConfigPathRollRate_SK, metadata_rate_of_roll));
+     auto* sensor_roll_rate = new OrientationValues(
+         orientation_sensor, OrientationValues::kRateOfRoll,
+         ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathRollRate);
+     sensor_roll_rate->connect_to(
+         new SKOutputFloat(kSKPathRollRate, kConfigPathRollRate_SK, metadata_rate_of_roll));
 
-//     auto* sensor_pitch_rate = new OrientationValues(
-//         orientation_sensor, OrientationValues::kRateOfPitch,
-//         ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathPitchRate);
-//     sensor_pitch_rate->connect_to(
-//         new SKOutputFloat(kSKPathPitchRate, kConfigPathPitchRate_SK, metadata_rate_of_pitch));
+     auto* sensor_pitch_rate = new OrientationValues(
+         orientation_sensor, OrientationValues::kRateOfPitch,
+         ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathPitchRate);
+     sensor_pitch_rate->connect_to(
+         new SKOutputFloat(kSKPathPitchRate, kConfigPathPitchRate_SK, metadata_rate_of_pitch));
 
   /* Send the X acceleration as a single value.
    * TODO - it makes sense to send all three accel values (XYZ) in
    * one SK message. The needed data structure is not defined in
    * SensESP. It can be defined in signalk_output.h (as was done for Attitude)
    */
-//     auto* sensor_accel_x = new OrientationValues(
-//         orientation_sensor, OrientationValues::kAccelerationX,
-//         ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathAccelXYZ);
-//     sensor_accel_x->connect_to(
-//         new SKOutputFloat(kSKPathAccel, kConfigPathAccelXYZ_SK, metadata_accel));
+     auto* sensor_accel_x = new OrientationValues(
+         orientation_sensor, OrientationValues::kAccelerationX,
+         ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathAccelXYZ);
+     sensor_accel_x->connect_to(
+         new SKOutputFloat(kSKPathAccel, kConfigPathAccelXYZ_SK, metadata_accel));
 
   /* Send Temperature as measured by the orientation sensor.
    * Depending on mounting and enclosure, it may be close to ambient.
@@ -499,7 +499,7 @@ void setup() {
    *
    * If the sensor is mounted differently, or you prefer an alternate nomenclature,
    * the Get___() methods in sensor_fusion_class.cpp can be adjusted.
-  */
+   */
 
   /* Start networking, SK server connections and other SensESP internals
    */
