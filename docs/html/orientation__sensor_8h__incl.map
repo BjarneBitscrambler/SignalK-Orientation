@@ -1,7 +1,7 @@
 <map id="src/orientation_sensor.h" name="src/orientation_sensor.h">
-<area shape="rect" id="node1" title="Orientation sensor interface to SensESP." alt="" coords="170,5,349,32"/>
+<area shape="rect" id="node1" title="Orientation sensor interface to SensESP." alt="" coords="198,5,377,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,169,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="194,80,325,107"/>
-<area shape="rect" id="node4" href="$signalk__attitude_8h.html" title="Vessel Attitude (orientation) data structure definition file." alt="" coords="349,80,487,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="329,155,507,181"/>
+<area shape="rect" id="node3" title=" " alt="" coords="193,80,381,107"/>
+<area shape="rect" id="node4" href="$signalk__orientation_8h.html" title="Vessel orientation data structures definition file." alt="" coords="405,80,564,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="367,155,603,181"/>
 </map>

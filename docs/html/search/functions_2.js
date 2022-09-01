@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['get_5fconfig_5fschema_62',['get_config_schema',['../classAttitudeValues.html#adf9d7dc60f400d5f20ff06887084cd53',1,'AttitudeValues::get_config_schema()'],['../classOrientationValues.html#a5e019410800d016a6a059b30ecba0860',1,'OrientationValues::get_config_schema()']]],
-  ['get_5fconfiguration_63',['get_configuration',['../classAttitudeValues.html#a4b6b5bb5c36630f2bb6b306bebf2a3f3',1,'AttitudeValues::get_configuration()'],['../classOrientationValues.html#a5319a616683fce802343502445e4f103',1,'OrientationValues::get_configuration()']]]
+  ['magcalvalues_86',['MagCalValues',['../classsensesp_1_1MagCalValues.html#a12c3bd89f76ca213debbd8a1eb7ce1c5',1,'sensesp::MagCalValues']]]
 ];

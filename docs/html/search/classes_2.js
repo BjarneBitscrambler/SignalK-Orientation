@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['skoutput_51',['SKOutput',['../classSKOutput.html',1,'']]],
-  ['skoutput_3c_20attitude_20_3e_52',['SKOutput&lt; Attitude &gt;',['../classSKOutput_3_01Attitude_01_4.html',1,'']]],
-  ['skoutputnumeric_53',['SKOutputNumeric',['../classSKOutputNumeric.html',1,'']]]
+  ['orientationsensor_71',['OrientationSensor',['../classsensesp_1_1OrientationSensor.html',1,'sensesp']]],
+  ['orientationvalues_72',['OrientationValues',['../classsensesp_1_1OrientationValues.html',1,'sensesp']]]
 ];

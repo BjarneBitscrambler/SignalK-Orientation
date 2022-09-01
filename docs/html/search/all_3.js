@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['get_5fconfig_5fschema_7',['get_config_schema',['../classAttitudeValues.html#adf9d7dc60f400d5f20ff06887084cd53',1,'AttitudeValues::get_config_schema()'],['../classOrientationValues.html#a5e019410800d016a6a059b30ecba0860',1,'OrientationValues::get_config_schema()']]],
-  ['get_5fconfiguration_8',['get_configuration',['../classAttitudeValues.html#a4b6b5bb5c36630f2bb6b306bebf2a3f3',1,'AttitudeValues::get_configuration()'],['../classOrientationValues.html#a5319a616683fce802343502445e4f103',1,'OrientationValues::get_configuration()']]]
+  ['get_5fconfig_5fschema_8',['get_config_schema',['../classsensesp_1_1AttitudeValues.html#a17d5f1024872674f78f1f8746422a8e6',1,'sensesp::AttitudeValues::get_config_schema()'],['../classsensesp_1_1MagCalValues.html#aaab0acb904c02df778e2974ccb389b1a',1,'sensesp::MagCalValues::get_config_schema()'],['../classsensesp_1_1OrientationValues.html#ab63832935c4b4da4dc790e36d7539429',1,'sensesp::OrientationValues::get_config_schema()']]],
+  ['get_5fconfiguration_9',['get_configuration',['../classsensesp_1_1AttitudeValues.html#aaac6c5e61f393e24e4f5fa50ce65bb21',1,'sensesp::AttitudeValues::get_configuration()'],['../classsensesp_1_1MagCalValues.html#a949210c81c64083ee85205e94507bff3',1,'sensesp::MagCalValues::get_configuration()'],['../classsensesp_1_1OrientationValues.html#a8486929c38fd059c1dd955070cf1f084',1,'sensesp::OrientationValues::get_configuration()']]]
 ];

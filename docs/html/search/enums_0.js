@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['orientationvaltype_83',['OrientationValType',['../classOrientationValues.html#a2ae5c72b3b3e7cb8db81662373a7e569',1,'OrientationValues']]]
+  ['orientationvaltype_117',['OrientationValType',['../classsensesp_1_1OrientationValues.html#a2c820e487b251ef3913f8dadf0618a01',1,'sensesp::OrientationValues']]]
 ];

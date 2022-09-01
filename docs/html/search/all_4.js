@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['is_5fdata_5fvalid_9',['is_data_valid',['../structAttitude.html#ae2a35a07b04a97cc16a3373de8508e8f',1,'Attitude']]]
+  ['is_5fdata_5fvalid_10',['is_data_valid',['../structsensesp_1_1Attitude.html#a8f649ed25cab350fab9a4ca70ef45ee4',1,'sensesp::Attitude::is_data_valid()'],['../structsensesp_1_1MagCal.html#a010bf47d6483a328dce7a2bd11dabef4',1,'sensesp::MagCal::is_data_valid()']]]
 ];

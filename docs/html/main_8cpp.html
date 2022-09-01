@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SignalK-Orientation
-   &#160;<span id="projectnumber">0.1.3</span>
+   &#160;<span id="projectnumber">0.2.1</span>
    </div>
-   <div id="projectbrief">Orientation output in Signal K format for ESP8266 and ESP32</div>
+   <div id="projectbrief">Orientation output in Signal K format for ESP32</div>
   </td>
  </tr>
  </tbody>
@@ -69,67 +69,169 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">main.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Orientation output in Signal K format via SensESP. This file provides examples for using the Orientation library together with SensESP to report vessel orientation data to a Signal K server. Intended hardware is an ESP32 or ESP8266 platform and an FXOS8700/FXAS21002 combination accelerometer/magnetometer/gyroscope.  
+<p>Orientation output in Signal K format via SensESP. This file provides examples for using the Orientation library together with SensESP to report vessel orientation data to a Signal K server.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;Arduino.h&gt;</code><br />
 <code>#include &lt;Wire.h&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &quot;sensesp_app.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="orientation__sensor_8h_source.html">orientation_sensor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="signalk__orientation_8h_source.html">signalk_orientation.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="signalk__output_8h_source.html">signalk_output.h</a>&quot;</code><br />
+<code>#include &quot;sensesp/sensors/sensor.h&quot;</code><br />
+<code>#include &quot;sensesp_app_builder.h&quot;</code><br />
+<code>#include &quot;sensesp/sensors/digital_input.h&quot;</code><br />
+<code>#include &quot;sensesp/system/lambda_consumer.h&quot;</code><br />
+<code>#include &quot;sensesp/transforms/debounce.h&quot;</code><br />
+<code>#include &quot;sensesp/transforms/angle_correction.h&quot;</code><br />
+<code>#include &quot;sensesp/transforms/curveinterpolator.h&quot;</code><br />
+<code>#include &quot;sensesp/transforms/linear.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for main.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="main_8cpp__incl.png" border="0" usemap="#src_2main_8cpp" alt=""/></div>
 <map name="src_2main_8cpp" id="src_2main_8cpp">
-<area shape="rect" title="Orientation output in Signal K format via SensESP. This file provides examples for using the Orientat..." alt="" coords="277,5,383,32"/>
-<area shape="rect" title=" " alt="" coords="5,80,89,107"/>
-<area shape="rect" title=" " alt="" coords="114,80,178,107"/>
-<area shape="rect" title=" " alt="" coords="202,80,277,107"/>
-<area shape="rect" title=" " alt="" coords="301,80,359,107"/>
-<area shape="rect" title=" " alt="" coords="384,80,503,107"/>
-<area shape="rect" href="orientation__sensor_8h.html" title="Orientation sensor interface to SensESP." alt="" coords="526,80,681,107"/>
-<area shape="rect" href="signalk__output_8h.html" title="Defines the Value Producers that handle Attitude. This file replaces one of the same name in SensESP ..." alt="" coords="779,80,910,107"/>
-<area shape="rect" title=" " alt="" coords="275,155,439,181"/>
-<area shape="rect" title=" " alt="" coords="463,155,594,181"/>
-<area shape="rect" href="signalk__attitude_8h.html" title="Vessel Attitude (orientation) data structure definition file." alt="" coords="618,155,757,181"/>
-<area shape="rect" title=" " alt="" coords="598,229,777,256"/>
-<area shape="rect" title=" " alt="" coords="781,155,908,181"/>
-<area shape="rect" title=" " alt="" coords="933,155,1119,181"/>
-<area shape="rect" title=" " alt="" coords="1143,155,1317,181"/>
+<area shape="rect" title="Orientation output in Signal K format via SensESP. This file provides examples for using the Orientat..." alt="" coords="676,5,781,32"/>
+<area shape="rect" title=" " alt="" coords="5,87,89,114"/>
+<area shape="rect" title=" " alt="" coords="114,87,178,114"/>
+<area shape="rect" title=" " alt="" coords="202,87,277,114"/>
+<area shape="rect" title=" " alt="" coords="301,87,359,114"/>
+<area shape="rect" href="orientation__sensor_8h.html" title="Orientation sensor interface to SensESP." alt="" coords="434,87,589,114"/>
+<area shape="rect" title=" " alt="" coords="181,177,369,203"/>
+<area shape="rect" href="signalk__orientation_8h.html" title="Vessel orientation data structures definition file." alt="" coords="581,177,740,203"/>
+<area shape="rect" href="signalk__output_8h.html" title="Defines the Value Producers that handle Attitude and Magnetic Calibration parameters...." alt="" coords="663,87,794,114"/>
+<area shape="rect" title=" " alt="" coords="818,87,989,114"/>
+<area shape="rect" title=" " alt="" coords="1013,80,1188,121"/>
+<area shape="rect" title=" " alt="" coords="1212,80,1392,121"/>
+<area shape="rect" title=" " alt="" coords="1416,80,1567,121"/>
+<area shape="rect" title=" " alt="" coords="1591,80,1741,121"/>
+<area shape="rect" title=" " alt="" coords="1765,80,1916,121"/>
+<area shape="rect" title=" " alt="" coords="1940,80,2091,121"/>
+<area shape="rect" title=" " alt="" coords="393,177,557,203"/>
+<area shape="rect" title=" " alt="" coords="543,259,779,285"/>
+<area shape="rect" title=" " alt="" coords="939,169,1116,211"/>
+<area shape="rect" title=" " alt="" coords="764,169,915,211"/>
 </map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a1dccaeab5ac3eca9b4b06fc7b5caad3d"><td class="memItemLeft" align="right" valign="top"><a id="a1dccaeab5ac3eca9b4b06fc7b5caad3d"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a1dccaeab5ac3eca9b4b06fc7b5caad3d">BOARD_ACCEL_MAG_I2C_ADDR</a>&#160;&#160;&#160;(0x1F)</td></tr>
-<tr class="memdesc:a1dccaeab5ac3eca9b4b06fc7b5caad3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">I2C address on Adafruit breakout board. <br /></td></tr>
+<tr class="memitem:a1dccaeab5ac3eca9b4b06fc7b5caad3d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a1dccaeab5ac3eca9b4b06fc7b5caad3d">BOARD_ACCEL_MAG_I2C_ADDR</a>&#160;&#160;&#160;(0x1F)</td></tr>
+<tr class="memdesc:a1dccaeab5ac3eca9b4b06fc7b5caad3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">I2C address on Adafruit breakout board.  <a href="main_8cpp.html#a1dccaeab5ac3eca9b4b06fc7b5caad3d">More...</a><br /></td></tr>
 <tr class="separator:a1dccaeab5ac3eca9b4b06fc7b5caad3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab429e034af5b2693875c955763240f8c"><td class="memItemLeft" align="right" valign="top"><a id="ab429e034af5b2693875c955763240f8c"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#ab429e034af5b2693875c955763240f8c">BOARD_GYRO_I2C_ADDR</a>&#160;&#160;&#160;(0x21)</td></tr>
 <tr class="memdesc:ab429e034af5b2693875c955763240f8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">I2C address on Adafruit breakout board. <br /></td></tr>
 <tr class="separator:ab429e034af5b2693875c955763240f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd84f048502b749115c9e05262ed6753"><td class="memItemLeft" align="right" valign="top"><a id="afd84f048502b749115c9e05262ed6753"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PIN_I2C_SDA</b>&#160;&#160;&#160;(23)</td></tr>
+<tr class="separator:afd84f048502b749115c9e05262ed6753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b5cc0023af0923f5e57d107bdd8f985"><td class="memItemLeft" align="right" valign="top"><a id="a6b5cc0023af0923f5e57d107bdd8f985"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PIN_I2C_SCL</b>&#160;&#160;&#160;(25)</td></tr>
+<tr class="separator:a6b5cc0023af0923f5e57d107bdd8f985"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab84fa8929ab0fa64b513d4c135c0e679"><td class="memItemLeft" align="right" valign="top"><a id="ab84fa8929ab0fa64b513d4c135c0e679"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PIN_SWITCH_CAL_SAVE</b>&#160;&#160;&#160;(36)</td></tr>
+<tr class="separator:ab84fa8929ab0fa64b513d4c135c0e679"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d73fdb00374172af01d0a1339d73ddd"><td class="memItemLeft" align="right" valign="top"><a id="a6d73fdb00374172af01d0a1339d73ddd"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SWITCH_ACTIVE_STATE</b>&#160;&#160;&#160;(0)</td></tr>
+<tr class="separator:a6d73fdb00374172af01d0a1339d73ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9542ad9ec41290b49111102a8f89051"><td class="memItemLeft" align="right" valign="top"><a id="aa9542ad9ec41290b49111102a8f89051"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ORIENTATION_REPORTING_INTERVAL_MS</b>&#160;&#160;&#160;(100)</td></tr>
 <tr class="separator:aa9542ad9ec41290b49111102a8f89051"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae4387d430ece678609fa3ae7b5fc8516"><td class="memItemLeft" align="right" valign="top"><a id="ae4387d430ece678609fa3ae7b5fc8516"></a>
-ReactESP&#160;</td><td class="memItemRight" valign="bottom"><b>app</b> ([]() { SetupSerialDebug(115200);sensesp_app=new SensESPApp(&quot;SensESP_D1&quot;, &quot;mySSID&quot;, &quot;myPassword&quot;, &quot;192.168.1.4&quot;, 3000);const char *kSKPathHeading=&quot;navigation.headingCompass&quot;;const char *kSKPathAttitude=&quot;navigation.attitude&quot;;const char *kConfigPathAttitude=&quot;/sensors/attitude/value_settings&quot;;const char *kConfigPathAttitude_SK=&quot;/sensors/attitude/sk&quot;;const char *kConfigPathHeading=&quot;/sensors/heading/value_settings&quot;;const char *kConfigPathHeading_SK=&quot;/sensors/heading/sk&quot;;auto *orientation_sensor=new <a class="el" href="classOrientationSensor.html">OrientationSensor</a>(PIN_I2C_SDA, PIN_I2C_SCL, <a class="el" href="main_8cpp.html#a1dccaeab5ac3eca9b4b06fc7b5caad3d">BOARD_ACCEL_MAG_I2C_ADDR</a>, <a class="el" href="main_8cpp.html#ab429e034af5b2693875c955763240f8c">BOARD_GYRO_I2C_ADDR</a>);auto *sensor_heading=new <a class="el" href="classOrientationValues.html">OrientationValues</a>(orientation_sensor, <a class="el" href="classOrientationValues.html#a2ae5c72b3b3e7cb8db81662373a7e569a7241feef6549198eb328566a3149722a">OrientationValues::kCompassHeading</a>, ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathHeading);sensor_heading-&gt;connect_to(new <a class="el" href="classSKOutputNumeric.html">SKOutputNumber</a>(kSKPathHeading, kConfigPathHeading_SK));auto *sensor_attitude=new <a class="el" href="classAttitudeValues.html">AttitudeValues</a>(orientation_sensor, ORIENTATION_REPORTING_INTERVAL_MS, kConfigPathAttitude);sensor_attitude-&gt;connect_to(new <a class="el" href="signalk__output_8h.html#aadfa01cf1e462df3d62065b2ac03d2c4">SKOutputAttitude</a>(kSKPathAttitude, kConfigPathAttitude_SK));sensesp_app-&gt;enable();})</td></tr>
-<tr class="separator:ae4387d430ece678609fa3ae7b5fc8516"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fc01d736fe50cf5b977f755b675f11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d">setup</a> ()</td></tr>
+<tr class="separator:a4fc01d736fe50cf5b977f755b675f11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe461d27b9c48d5921c00d521181f12f"><td class="memItemLeft" align="right" valign="top"><a id="afe461d27b9c48d5921c00d521181f12f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>loop</b> ()</td></tr>
+<tr class="separator:afe461d27b9c48d5921c00d521181f12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ae94fcfeeff9366a65097e20b6d7a2d37"><td class="memItemLeft" align="right" valign="top"><a id="ae94fcfeeff9366a65097e20b6d7a2d37"></a>
+reactesp::ReactESP&#160;</td><td class="memItemRight" valign="bottom"><b>app</b></td></tr>
+<tr class="separator:ae94fcfeeff9366a65097e20b6d7a2d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Orientation output in Signal K format via SensESP. This file provides examples for using the Orientation library together with SensESP to report vessel orientation data to a Signal K server. Intended hardware is an ESP32 or ESP8266 platform and an FXOS8700/FXAS21002 combination accelerometer/magnetometer/gyroscope. </p>
-</div></div><!-- contents -->
+<div class="textblock"><p>Orientation output in Signal K format via SensESP. This file provides examples for using the Orientation library together with SensESP to report vessel orientation data to a Signal K server. </p>
+<p>Intended hardware is an ESP32 platform and an FXOS8700/FXAS21002 combination accelerometer/magnetometer/gyroscope.</p>
+<p>The examples include:</p><ul>
+<li>Compass Heading output</li>
+<li>Attitude (yaw, pitch, roll) output</li>
+<li>Magnetic Heading (Compass reading corrected for deviations)</li>
+<li>Physical switch to trigger saving of magnetic calibration</li>
+<li>Temperature output (taken from the sensor IC and corrected)</li>
+<li>Acceleration in X,Y, Z axes</li>
+<li>Turn, Pitch, and Roll Rates Some example outputs are commented out by default: read the associated comments for details. </li>
+</ul>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a1dccaeab5ac3eca9b4b06fc7b5caad3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dccaeab5ac3eca9b4b06fc7b5caad3d">&#9670;&nbsp;</a></span>BOARD_ACCEL_MAG_I2C_ADDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BOARD_ACCEL_MAG_I2C_ADDR&#160;&#160;&#160;(0x1F)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>I2C address on Adafruit breakout board. </p>
+<p>Mandatory SensESP and Orientation library headers If using a button-press to save Magnetic Calibration, then include digital_input.h, lambda_consumer.h, and debounce.h If wanting to correct compass readings for mounting offsets or residual deviations after magnetic calibration, then need either angle correction transform (which provides a straight offset) or a curve interpolator transform (which provides interpolation to a user-supplied set of points). If using the Temperature report, then include the linear transform for calibrating the temperature readings. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a4fc01d736fe50cf5b977f755b675f11d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fc01d736fe50cf5b977f755b675f11d">&#9670;&nbsp;</a></span>setup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setup </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create the global SensESPApp() object. By passing the WiFi setup details in the constructor, rather than relying on entering it in the device's web interface, we save about 2496 bytes of heap memory (RAM). Another alternative, used below, is the Builder pattern (sensesp_app_builder.h), which saves about 1880 bytes.</p>
+<p>The "SignalK path" identifies this sensor to the Signal K server. Leaving this blank would indicate this particular sensor or transform does not broadcast Signal K data. If you have multiple sensors connected to your microcontroller (ESP), each of them will probably have its own Signal K path variable. For example, if you have two propulsion engines, and you want the RPM of each of them to go to Signal K, you might have sk_path_portEngine = "propulsion.port.revolutions" and sk_path_starboardEngine = "propulsion.starboard.revolutions" To find valid Signal K Paths look at this link (or later version): </p><dl class="section see"><dt>See also</dt><dd><a href="https://signalk.org/specification/1.7.0/doc/vesselsBranch.html">https://signalk.org/specification/1.7.0/doc/vesselsBranch.html</a></dd></dl>
+<p>Vessel heading can be reported as headingCompass (uncorrected for deviation), headingMagnetic (corrected for deviations), or as part of an attitude data group (i.e. yaw, pitch, roll). All three paths are defined in the Signal K spec and have default display widgets in the Signal K Instrument Panel.</p>
+<p>This example reports heading, pitch, and roll. If you want other parameters as well, uncomment the appropriate SKpath(s) from the following. Signal K v1.7 does not describe paths for roll rate and pitch rate so these are provided using the same pattern as for rateOfTurn.</p>
+<p>Signal K v1.7 says path for temperature can include zone. Replace ecompass with a different zone if desired.</p>
+<p>Signal K v1.7 does not describe a path for acceleration.</p>
+<p>The following SKpaths are useful when performing magnetic calibration, and for confirming that the current magnetic environment of the sensor is unchanged from the most recent saved calibration. None of these parameters have predefined paths in the Signal K spec, so may be changed to suit.</p>
+<p>For more details and suggestions on how to perform magnetic calibration, see the Wiki at </p><dl class="section see"><dt>See also</dt><dd><a href="https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki">https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki</a></dd></dl>
+<p>If you are creating a new Signal K path that does not already exist in the specification, it is best to define "metadata" that describes your new value. This metadata will be reported to the Signal K server the first time your sensor reports its value(s) to the server.</p>
+<p>Uncomment from the following example metadata as needed, or create your own.</p>
+<p>The "Configuration path" is combined with "/config" to formulate a URL used by the RESTful API for retrieving or setting configuration data. It is ALSO used to specify a path to the file system where configuration data is saved on the MCU board. It should ALWAYS start with a forward slash if specified. The max length for a config path is 32 characters, due to a limitation in the SPIFFS filesystem. If the config path is left blank, that indicates this sensor or transform does not have any configuration to save, or that you're not interested in doing run-time configuration. These two are necessary until a method is created to synthesize them.</p>
+<p>Note the hardware sensor itself has no run-time configurable items. Note the empty "" for configuring the SK paths for attitude and heading: this is because the paths for these parameters are prescribed by the SK spec, and default instruments expect these paths. You can override them, but will then need to define your own instruments to display the data.</p>
+<p>Below arrangement of config paths yields this web interface structure:</p>
+<p>sensors-&gt;attitude -&gt;settings (adjusts report interval, saves mag cal) -&gt;heading -&gt;deviation (adjusts compass deviation with Curve Interpolator) -&gt;offset (adjusts compass deviation with single value) -&gt;settings (adjusts report interval, saves mag cal)</p>
+<p>Create and initialize the Orientation data source. This uses a 9 Degrees-of-freedom combination sensor that provides multiple orientation parameters. Selection of which particular parameters are output is performed later when the value producers are created.</p>
+<p>Magnetic Calibration occurs during regular runtime. After power-on, move the sensor through a series of rolls, pitches and yaws. After enough readings have been collected (takes 15-30 seconds when rotating the sensor by hand) then the sensor should be calibrated. A Magnetic Calibration can be saved in non-volatile memory so it will be loaded at the next power-up. To save a calibration, use the sensors/heading/settings-&gt;Save_Mag_Cal entry in the sensor web interface, AND/OR enable and use the optional hardware switch mentioned later in this code. A calibration will be valid until the sensor's magnetic environment changes.</p>
+<p>The following outputs are useful when calibrating. See the wiki at </p><dl class="section see"><dt>See also</dt><dd><a href="https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki">https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki</a> for details on how to interpret the values. None are recognized in the Signal K spec, so there is no prescribed SK path that they need to be sent to.</dd></dl>
+<p>Because there are quite a few parameters, and they are likely only referred to infrequently (i.e. when calibrating, or when magnetic disturbances are suspected), you may want to configure the Signal K instrument panel to display these paths on a secondary screen, separate from the primary navigation screen.</p>
+<p>Following section monitors a physical switch that, when pressed, saves the sensor's current magnetic calibration to non-volatile memory. Comment/uncomment the following as needed.</p>
+<p>Monitor a button for CHANGEs in state, debounced by kDebounceDelay. No web interface path is supplied, so interval won't be adjustable. Note INPUT_PULLUP may need to change depending on how button is wired.</p>
+<p>End of physical switch section.</p>
+<p>Relationship of the Axes and the terminology: If the sensor is mounted with the X-axis pointing to the bow of the boat and the Y-axis pointing to Port, then Z points up and the normal marine conventions apply. The wiki has details: </p><dl class="section see"><dt>See also</dt><dd><a href="https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki">https://github.com/BjarneBitscrambler/SignalK-Orientation/wiki</a></dd></dl>
+<p>If the sensor is mounted differently, or you prefer an alternate nomenclature, the Get___() methods in sensor_fusion_class.cpp can be adjusted.</p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

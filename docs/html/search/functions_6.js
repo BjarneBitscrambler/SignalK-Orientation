@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['update_71',['Update',['../classAttitudeValues.html#a54cc69a0c69ae09c6fe683df90fbc2c7',1,'AttitudeValues::Update()'],['../classOrientationValues.html#a882fae4a1a57919498c8980ed18d4f19',1,'OrientationValues::Update()']]]
+  ['update_96',['Update',['../classsensesp_1_1AttitudeValues.html#a97ab592d913a247a2db4625991f05da1',1,'sensesp::AttitudeValues::Update()'],['../classsensesp_1_1MagCalValues.html#a5d082763fab7314054dcf2251d190fea',1,'sensesp::MagCalValues::Update()'],['../classsensesp_1_1OrientationValues.html#a0fbc6ad6b2017c30910664c06654ce43',1,'sensesp::OrientationValues::Update()']]]
 ];

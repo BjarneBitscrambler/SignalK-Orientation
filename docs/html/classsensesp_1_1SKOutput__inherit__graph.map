@@ -1,0 +1,6 @@
+<map id="sensesp::SKOutput&lt; T &gt;" name="sensesp::SKOutput&lt; T &gt;">
+<area shape="rect" id="node1" title="A specialized transform whose primary purpose is to output Signal K data on the Signal K network." alt="" coords="41,80,222,107"/>
+<area shape="rect" id="node4" href="$classsensesp_1_1SKOutputNumeric.html" title="A special class for sending numeric values to the Signal K server on a specific Signal K path." alt="" coords="13,155,249,181"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,92,32"/>
+<area shape="rect" id="node3" title=" " alt="" coords="117,5,314,32"/>
+</map>

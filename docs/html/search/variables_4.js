@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['report_5finterval_5fms_5f_76',['report_interval_ms_',['../classAttitudeValues.html#af8dab3b336fdd50b956e27b3a1b41759',1,'AttitudeValues::report_interval_ms_()'],['../classOrientationValues.html#ad86c0b916df68eb8745af5b29f78e7da',1,'OrientationValues::report_interval_ms_()']]],
-  ['roll_77',['roll',['../structAttitude.html#a8bfd8ad189d17c32c1d8c8c7be458119',1,'Attitude']]]
+  ['orientation_5fsensor_5f_107',['orientation_sensor_',['../classsensesp_1_1AttitudeValues.html#a557ec7579088b24f140964e98e1de4b6',1,'sensesp::AttitudeValues::orientation_sensor_()'],['../classsensesp_1_1MagCalValues.html#a84c5c6989a76990251c1f4cb873f6a0a',1,'sensesp::MagCalValues::orientation_sensor_()'],['../classsensesp_1_1OrientationValues.html#ad6143fa50c29936428ea2d97ab6306d8',1,'sensesp::OrientationValues::orientation_sensor_()']]]
 ];

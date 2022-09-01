@@ -1,8 +1,7 @@
 <map id="src/signalk_output.h" name="src/signalk_output.h">
-<area shape="rect" id="node1" title="Defines the Value Producers that handle Attitude. This file replaces one of the same name in SensESP ..." alt="" coords="243,5,396,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,132,107"/>
-<area shape="rect" id="node3" href="$signalk__attitude_8h.html" title="Vessel Attitude (orientation) data structure definition file." alt="" coords="157,80,295,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="319,80,506,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="530,80,703,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="137,155,315,181"/>
+<area shape="rect" id="node1" title="Defines the Value Producers that handle Attitude and Magnetic Calibration parameters...." alt="" coords="239,5,392,32"/>
+<area shape="rect" id="node2" href="$signalk__orientation_8h.html" title="Vessel orientation data structures definition file." alt="" coords="44,87,203,114"/>
+<area shape="rect" id="node4" title=" " alt="" coords="227,80,404,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="428,80,579,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,241,196"/>
 </map>

@@ -1,6 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,31,92,57"/>
-<area shape="rect" id="node2" href="$classSKOutput.html" title="A specialized transform whose primary purpose is to output Signal K data on the Signal K network." alt="" coords="140,5,260,32"/>
-<area shape="rect" id="node4" href="$classSKOutput_3_01Attitude_01_4.html" title="A template specialization of SKOutput:: for sending attitude values to the Signal K server." alt="" coords="515,31,679,57"/>
-<area shape="rect" id="node3" href="$classSKOutputNumeric.html" title=" " alt="" coords="308,5,467,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,104,32"/>
+<area shape="rect" id="node2" href="$classsensesp_1_1OrientationValues.html" title="OrientationValues reads and outputs orientation parameters." alt="" coords="152,5,352,32"/>
 </map>

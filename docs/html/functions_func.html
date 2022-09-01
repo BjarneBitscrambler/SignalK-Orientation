@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SignalK-Orientation
-   &#160;<span id="projectnumber">0.1.3</span>
+   &#160;<span id="projectnumber">0.2.1</span>
    </div>
-   <div id="projectbrief">Orientation output in Signal K format for ESP8266 and ESP32</div>
+   <div id="projectbrief">Orientation output in Signal K format for ESP32</div>
   </td>
  </tr>
  </tbody>
@@ -65,50 +65,61 @@ $(function() {
 <div class="contents">
 &#160;<ul>
 <li>as_signalk()
-: <a class="el" href="classSKOutput_3_01Attitude_01_4.html#a5473c5b9050a08a6dbc958ef4632adc1">SKOutput&lt; Attitude &gt;</a>
+: <a class="el" href="classsensesp_1_1SKOutput_3_01Attitude_01_4.html#a2a61e01299c1765b44ea8e7256a4a365">sensesp::SKOutput&lt; Attitude &gt;</a>
+, <a class="el" href="classsensesp_1_1SKOutput_3_01MagCal_01_4.html#a10803c67138941fcfb4566533b1b32ef">sensesp::SKOutput&lt; MagCal &gt;</a>
 </li>
 <li>AttitudeValues()
-: <a class="el" href="classAttitudeValues.html#a2bcf8964a0afb04652c0859ac9d557e6">AttitudeValues</a>
-</li>
-<li>enable()
-: <a class="el" href="classAttitudeValues.html#a5e7ee49383d0984a2146b331d3f34b87">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#af5a51df8710dc6c5b6b465974a9356ae">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a9e4e960ff82ebe96b9b2e8d1342577d1">sensesp::AttitudeValues</a>
 </li>
 <li>get_config_schema()
-: <a class="el" href="classAttitudeValues.html#adf9d7dc60f400d5f20ff06887084cd53">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#a5e019410800d016a6a059b30ecba0860">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a17d5f1024872674f78f1f8746422a8e6">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#aaab0acb904c02df778e2974ccb389b1a">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#ab63832935c4b4da4dc790e36d7539429">sensesp::OrientationValues</a>
 </li>
 <li>get_configuration()
-: <a class="el" href="classAttitudeValues.html#a4b6b5bb5c36630f2bb6b306bebf2a3f3">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#a5319a616683fce802343502445e4f103">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#aaac6c5e61f393e24e4f5fa50ce65bb21">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#a949210c81c64083ee85205e94507bff3">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#a8486929c38fd059c1dd955070cf1f084">sensesp::OrientationValues</a>
+</li>
+<li>MagCalValues()
+: <a class="el" href="classsensesp_1_1MagCalValues.html#a12c3bd89f76ca213debbd8a1eb7ce1c5">sensesp::MagCalValues</a>
 </li>
 <li>OrientationSensor()
-: <a class="el" href="classOrientationSensor.html#abda8fb0864ac915c99e6d863cd6ca832">OrientationSensor</a>
+: <a class="el" href="classsensesp_1_1OrientationSensor.html#a0b05f304b4eb771ffcf33fe6022538a9">sensesp::OrientationSensor</a>
 </li>
 <li>OrientationValues()
-: <a class="el" href="classOrientationValues.html#a3fa3993b078f783f82c77fc03d72e66c">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1OrientationValues.html#aa3f54f7c7ab961cbae70b319532593e7">sensesp::OrientationValues</a>
 </li>
 <li>ReadAndProcessSensors()
-: <a class="el" href="classOrientationSensor.html#a508be0895e42eb356676f7e5c94000f6">OrientationSensor</a>
+: <a class="el" href="classsensesp_1_1OrientationSensor.html#a920d63b3ff9c1b6b00f75d49ddb3f3c5">sensesp::OrientationSensor</a>
 </li>
 <li>set_configuration()
-: <a class="el" href="classAttitudeValues.html#a1219e593fc9f9d16208e4f079ab1416a">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#acd93f01bdbf642ade5bc5d1222b9e33f">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a83c171454c8ea52b864922521b31e59e">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#a92e5f42f634d50720ce4fb4e82a441cc">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#a65a8cb541180780326346a2386fa14a2">sensesp::OrientationValues</a>
 </li>
 <li>set_metadata()
-: <a class="el" href="classSKOutput.html#ae8241cbece63bf5d78ab3944e71eee95">SKOutput&lt; T &gt;</a>
-, <a class="el" href="classSKOutput_3_01Attitude_01_4.html#a62e8970eaa30da6a7bc7bb906e1c12a7">SKOutput&lt; Attitude &gt;</a>
+: <a class="el" href="classsensesp_1_1SKOutput.html#a04136285fe398306a634d716acaf2e8e">sensesp::SKOutput&lt; T &gt;</a>
+, <a class="el" href="classsensesp_1_1SKOutput_3_01Attitude_01_4.html#ac250c062b7b94a94fde63234b0207ab9">sensesp::SKOutput&lt; Attitude &gt;</a>
+, <a class="el" href="classsensesp_1_1SKOutput_3_01MagCal_01_4.html#af2d7c1fe0f38dbe6281d75789d740768">sensesp::SKOutput&lt; MagCal &gt;</a>
 </li>
 <li>SKOutput()
-: <a class="el" href="classSKOutput.html#a7cee8a888f79a12979cd454a75e0ca61">SKOutput&lt; T &gt;</a>
-, <a class="el" href="classSKOutput_3_01Attitude_01_4.html#aadd936386fee386f3b84594d31402997">SKOutput&lt; Attitude &gt;</a>
+: <a class="el" href="classsensesp_1_1SKOutput.html#a5a0094a2f0d4231438bff480a82e2257">sensesp::SKOutput&lt; T &gt;</a>
+, <a class="el" href="classsensesp_1_1SKOutput_3_01Attitude_01_4.html#acfda270124cfa1f36010de0deaedd64d">sensesp::SKOutput&lt; Attitude &gt;</a>
+, <a class="el" href="classsensesp_1_1SKOutput_3_01MagCal_01_4.html#a3f7df77fb91bcff56f5fd2ff181a05df">sensesp::SKOutput&lt; MagCal &gt;</a>
 </li>
 <li>SKOutputNumeric()
-: <a class="el" href="classSKOutputNumeric.html#ac967be23100f5ab350a1270a2449c0db">SKOutputNumeric&lt; T &gt;</a>
+: <a class="el" href="classsensesp_1_1SKOutputNumeric.html#a77936a9feb3990a075ee46c8e91ec618">sensesp::SKOutputNumeric&lt; T &gt;</a>
+</li>
+<li>start()
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a97df63559590fa881d51386ca6374a7f">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#a10283c646f12708f22b97c702744c7d2">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#a62144efc1ef96e0bab9fd0c639a77522">sensesp::OrientationValues</a>
 </li>
 <li>Update()
-: <a class="el" href="classAttitudeValues.html#a54cc69a0c69ae09c6fe683df90fbc2c7">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#a882fae4a1a57919498c8980ed18d4f19">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a97ab592d913a247a2db4625991f05da1">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#a5d082763fab7314054dcf2251d190fea">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#a0fbc6ad6b2017c30910664c06654ce43">sensesp::OrientationValues</a>
 </li>
 </ul>
 </div><!-- contents -->

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pitch_29',['pitch',['../structAttitude.html#a87e8642800d5a711ef63b21f7c4fd650',1,'Attitude']]]
+  ['pitch_45',['pitch',['../structsensesp_1_1Attitude.html#a301b623e72140199f99d7ec3db4bc110',1,'sensesp::Attitude']]]
 ];

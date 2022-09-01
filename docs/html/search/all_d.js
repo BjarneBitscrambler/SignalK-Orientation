@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['yaw_46',['yaw',['../structAttitude.html#aa741be8d5336c45af1b840f7fd9c7327',1,'Attitude']]]
+  ['yaw_66',['yaw',['../structsensesp_1_1Attitude.html#a3e05be75380ba813186cf032e294c500',1,'sensesp::Attitude']]]
 ];

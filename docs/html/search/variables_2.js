@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['orientation_5fsensor_5f_74',['orientation_sensor_',['../classAttitudeValues.html#ab40bde3c1cfd3c202f10e42168905653',1,'AttitudeValues::orientation_sensor_()'],['../classOrientationValues.html#ab7b83e888a9f3a5f9e9e321bbe035baa',1,'OrientationValues::orientation_sensor_()']]]
+  ['is_5fdata_5fvalid_100',['is_data_valid',['../structsensesp_1_1Attitude.html#a8f649ed25cab350fab9a4ca70ef45ee4',1,'sensesp::Attitude::is_data_valid()'],['../structsensesp_1_1MagCal.html#a010bf47d6483a328dce7a2bd11dabef4',1,'sensesp::MagCal::is_data_valid()']]]
 ];

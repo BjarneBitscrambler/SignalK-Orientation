@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['attitude_47',['Attitude',['../structAttitude.html',1,'']]],
-  ['attitudevalues_48',['AttitudeValues',['../classAttitudeValues.html',1,'']]]
+  ['attitude_67',['Attitude',['../structsensesp_1_1Attitude.html',1,'sensesp']]],
+  ['attitudevalues_68',['AttitudeValues',['../classsensesp_1_1AttitudeValues.html',1,'sensesp']]]
 ];

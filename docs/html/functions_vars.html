@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SignalK-Orientation
-   &#160;<span id="projectnumber">0.1.3</span>
+   &#160;<span id="projectnumber">0.2.1</span>
    </div>
-   <div id="projectbrief">Orientation output in Signal K format for ESP8266 and ESP32</div>
+   <div id="projectbrief">Orientation output in Signal K format for ESP32</div>
   </td>
  </tr>
  </tbody>
@@ -65,37 +65,64 @@ $(function() {
 <div class="contents">
 &#160;<ul>
 <li>attitude_
-: <a class="el" href="classAttitudeValues.html#a49e0a34ea76dee6c983e556ed73d6b2e">AttitudeValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#af912655af2f2c59a30b7f1f6e8c3bfea">sensesp::AttitudeValues</a>
+</li>
+<li>cal_fit_error
+: <a class="el" href="structsensesp_1_1MagCal.html#aa75671c4ffdece12a060d088eafff591">sensesp::MagCal</a>
+</li>
+<li>cal_fit_error_trial
+: <a class="el" href="structsensesp_1_1MagCal.html#a1f476a9f14cad2d46a09c712f7595f60">sensesp::MagCal</a>
 </li>
 <li>is_data_valid
-: <a class="el" href="structAttitude.html#ae2a35a07b04a97cc16a3373de8508e8f">Attitude</a>
+: <a class="el" href="structsensesp_1_1Attitude.html#a8f649ed25cab350fab9a4ca70ef45ee4">sensesp::Attitude</a>
+, <a class="el" href="structsensesp_1_1MagCal.html#a010bf47d6483a328dce7a2bd11dabef4">sensesp::MagCal</a>
+</li>
+<li>mag_cal_
+: <a class="el" href="classsensesp_1_1MagCalValues.html#a2cd89c72c9a2865dc9b989088d769cc2">sensesp::MagCalValues</a>
+</li>
+<li>mag_field_magnitude
+: <a class="el" href="structsensesp_1_1MagCal.html#ad4b407f25db87822d51c2f336e1ff81a">sensesp::MagCal</a>
+</li>
+<li>mag_field_magnitude_trial
+: <a class="el" href="structsensesp_1_1MagCal.html#a95fdc7bcd7c540554bdbba72aec6b6b2">sensesp::MagCal</a>
+</li>
+<li>mag_noise_covariance
+: <a class="el" href="structsensesp_1_1MagCal.html#a9ed7bc9eaf2ab854e3c1d0dfeb5a2f03">sensesp::MagCal</a>
+</li>
+<li>mag_solver
+: <a class="el" href="structsensesp_1_1MagCal.html#a204b4594f949c5a55238546c60107e99">sensesp::MagCal</a>
+</li>
+<li>magnetic_inclination
+: <a class="el" href="structsensesp_1_1MagCal.html#a123925ffc5a2b0bda2b834a2c7826ba4">sensesp::MagCal</a>
 </li>
 <li>orientation_sensor_
-: <a class="el" href="classAttitudeValues.html#ab40bde3c1cfd3c202f10e42168905653">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#ab7b83e888a9f3a5f9e9e321bbe035baa">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a557ec7579088b24f140964e98e1de4b6">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#a84c5c6989a76990251c1f4cb873f6a0a">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#ad6143fa50c29936428ea2d97ab6306d8">sensesp::OrientationValues</a>
 </li>
 <li>pitch
-: <a class="el" href="structAttitude.html#a87e8642800d5a711ef63b21f7c4fd650">Attitude</a>
+: <a class="el" href="structsensesp_1_1Attitude.html#a301b623e72140199f99d7ec3db4bc110">sensesp::Attitude</a>
 </li>
 <li>report_interval_ms_
-: <a class="el" href="classAttitudeValues.html#af8dab3b336fdd50b956e27b3a1b41759">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#ad86c0b916df68eb8745af5b29f78e7da">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a075525e12e57853e379280477b40ad91">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1MagCalValues.html#aeba3459ef2052bd96991ee71061ec4c7">sensesp::MagCalValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#ae9f2770ccc82c733cbceddc1a16b9874">sensesp::OrientationValues</a>
 </li>
 <li>roll
-: <a class="el" href="structAttitude.html#a8bfd8ad189d17c32c1d8c8c7be458119">Attitude</a>
+: <a class="el" href="structsensesp_1_1Attitude.html#ad56a97293b1686adba1487ccd6467956">sensesp::Attitude</a>
 </li>
 <li>save_mag_cal_
-: <a class="el" href="classAttitudeValues.html#abc90fecd895bf9a4cad9e042ec9d7162">AttitudeValues</a>
-, <a class="el" href="classOrientationValues.html#a660e1b5a6c832edf2e3375613cb0abf4">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1AttitudeValues.html#a237d042ae48a012dc03c57bac6b4eee9">sensesp::AttitudeValues</a>
+, <a class="el" href="classsensesp_1_1OrientationValues.html#a5743e1836447b319080ecf0581a593a2">sensesp::OrientationValues</a>
 </li>
 <li>sensor_interface_
-: <a class="el" href="classOrientationSensor.html#a4ab6ddb8210bfdaa3a957e678152b189">OrientationSensor</a>
+: <a class="el" href="classsensesp_1_1OrientationSensor.html#aeeb8888b562dc9f27a502809fe326561">sensesp::OrientationSensor</a>
 </li>
 <li>value_type_
-: <a class="el" href="classOrientationValues.html#a5f9bfcb526e135e9131d9796f27361ba">OrientationValues</a>
+: <a class="el" href="classsensesp_1_1OrientationValues.html#ac53e995fb3f496aaa12fdb05d5ce775b">sensesp::OrientationValues</a>
 </li>
 <li>yaw
-: <a class="el" href="structAttitude.html#aa741be8d5336c45af1b840f7fd9c7327">Attitude</a>
+: <a class="el" href="structsensesp_1_1Attitude.html#a3e05be75380ba813186cf032e294c500">sensesp::Attitude</a>
 </li>
 </ul>
 </div><!-- contents -->
