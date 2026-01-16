@@ -48,20 +48,23 @@ class OrientationSensor {
  * The three parameters are stored in an Attitude struct, and sent together
  * in one Signal K message. The units are radians.
  */
-class AttitudeValues : public AttitudeProducer, public sensesp::Sensor {
+//bj removed  public virtual AttitudeProducer, 
+class AttitudeValues : public  sensesp::Sensor <Attitude> {
  public:
   AttitudeValues(OrientationSensor* orientation_sensor,
-                 uint report_interval_ms = 100, String config_path = "");
-//sensESP v2 changes enable() to start()  void enable() override final;  ///< starts periodic outputs of Attitude
-  void start() override final;  ///< starts periodic outputs of Attitude
+                uint report_interval_ms = 100,
+                String config_path = "");
+//sensESP v3 removes start. Should start emitting data in constructor I think
+  //void start() override final;  ///< starts periodic outputs of Attitude
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
 
  private:
   void Update(void);  ///< fetches current attitude and notifies consumer
-  virtual void get_configuration(JsonObject& doc) override;
-  virtual bool set_configuration(const JsonObject& config) override;
-  virtual String get_config_schema() override;
+  //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
+  //virtual void get_configuration(JsonObject& doc) override;
+  //virtual bool set_configuration(const JsonObject& config) override;
+  //virtual String get_config_schema() override;
   Attitude attitude_;  ///< struct storing the current yaw,pitch,roll values
   uint report_interval_ms_;  ///< interval between attitude updates to Signal K
   int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
@@ -76,24 +79,29 @@ class AttitudeValues : public AttitudeProducer, public sensesp::Sensor {
  * the existing magnetic calibration suits the current magnetic
  * environment.
  */
-class MagCalValues : public MagCalProducer, public sensesp::Sensor {
+//removed : public MagCalProducer,
+class MagCalValues : public sensesp::Sensor <MagCal>{
  public:
   MagCalValues(OrientationSensor* orientation_sensor,
-                 uint report_interval_ms = 100, String config_path = "");
-//sensESP v2 changes enable() to start()  void enable() override final;  ///< starts periodic outputs of MagCal values
-  void start() override final;  ///< starts periodic outputs of MagCal values
+                uint report_interval_ms = 100,
+                String config_path = "");
+//sensESP v3 removes start(). Presumable have to start in Constructor
+  //void start() override final;  ///< starts periodic outputs of MagCal values
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
 
  private:
   void Update(void);  ///< fetches current attitude and notifies consumer
-  virtual void get_configuration(JsonObject& doc) override;
-  virtual bool set_configuration(const JsonObject& config) override;
-  virtual String get_config_schema() override;
+  //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
+  //virtual void get_configuration(JsonObject& doc) override;
+  //virtual bool set_configuration(const JsonObject& config) override;
+  //virtual String get_config_schema() override;
   MagCal mag_cal_;  ///< struct storing the current magnetic calibration parameters
   uint report_interval_ms_;  ///< interval between attitude updates to Signal K
 
 };  // end class MagCalValues
+
+
 
 /**
  * @brief OrientationValues reads and outputs orientation parameters.
@@ -105,7 +113,7 @@ class MagCalValues : public MagCalProducer, public sensesp::Sensor {
  * Create new instances in main.cpp for each parameter desired.
  */
 //sensESP v2 replaced NumericSensor with various sub-types  class OrientationValues : public NumericSensor {
-class OrientationValues : public FloatSensor {
+class OrientationValues  {
  public:
   enum OrientationValType {
     kCompassHeading,      ///< compass heading, also called yaw
@@ -130,24 +138,27 @@ class OrientationValues : public FloatSensor {
   };
   OrientationValues(OrientationSensor* orientation_sensor,
                     OrientationValType value_type = kCompassHeading,
-                    uint report_interval_ms = 100, String config_path = "");
-//sensESP v2 changes enable() to start()    void enable() override final;  ///< starts periodic outputs of Attitude
-  void start() override final;  ///< starts periodic outputs of Attitude
+                    int report_interval_ms = 100);
+//sensESP v3 removes start()
+  //void start() override final;  ///< starts periodic outputs of Attitude
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
-
- private:
-  void Update(
+ float ReportValue(
       void);  ///< fetches current orientation parameter and notifies consumer
-  virtual void get_configuration(JsonObject& doc) override;
-  virtual bool set_configuration(const JsonObject& config) override;
-  virtual String get_config_schema() override;
+ 
+ private:
+  //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
+  //virtual void get_configuration(JsonObject& doc) override;
+  //virtual bool set_configuration(const JsonObject& config) override;
+  //virtual String get_config_schema() override;
   OrientationValType
       value_type_;  ///< Particular type of orientation parameter supplied
   uint report_interval_ms_;  ///< Interval between data outputs via Signal K
   int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
+  int throttlePrint_;
 
-};  // end class OrientationValues
+};  // end class OrientationValues2
+
 
 } // namespace sensesp
 

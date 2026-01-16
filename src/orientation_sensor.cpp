@@ -49,8 +49,12 @@ OrientationSensor::OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
     // called.
     const uint32_t kFusionIntervalMs = 1000.0 / FUSION_HZ;
     // Start periodic reads of sensor and running of fusion algorithm.
+    /* SensESPv3 changed how React is used
     ReactESP::app->onRepeat(kFusionIntervalMs,
-                 [this]() { this->ReadAndProcessSensors(); });
+                 [this]() { this->ReadAndProcessSensors(); }); */
+    event_loop()->onRepeat(  kFusionIntervalMs,
+                             [this]() { this->ReadAndProcessSensors(); }
+                          );
   }
 
 }  // end OrientationSensor()
@@ -73,12 +77,17 @@ void OrientationSensor::ReadAndProcessSensors(void) {
  * configured.
  */
 AttitudeValues::AttitudeValues(OrientationSensor* orientation_sensor,
-                               uint report_interval_ms, String config_path)
+                               uint report_interval_ms,
+                              String config_path)
     : Sensor(config_path),
       orientation_sensor_{orientation_sensor},
       report_interval_ms_{report_interval_ms} {
-  load_configuration();
-  save_mag_cal_ = 0;
+  //SensESPv3 changed how Config is done  load_configuration();
+      save_mag_cal_ = 0;
+      event_loop()->onRepeat(  report_interval_ms_,
+                             [this]() { this->Update(); }
+                          );
+
 }  // end AttitudeValues()
 
 /**
@@ -87,10 +96,10 @@ AttitudeValues::AttitudeValues(OrientationSensor* orientation_sensor,
  * The start() function is inherited from sensesp::Sensor, and is
  * automatically called when the SensESP app starts.
  */
-void AttitudeValues::start() {
+/*void AttitudeValues::start() {
   ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
 }
-
+*/
 /**
  * @brief Provides one Attitude reading from the orientation sensor.
  *
@@ -117,8 +126,10 @@ void AttitudeValues::Update() {
   attitude_.pitch =
       orientation_sensor_->sensor_interface_->GetPitchRadians();
 
-  output = attitude_;
-  notify();
+  //output = attitude_;  //output is done differently in SensESPv3  as_signalk_json()
+  //notify();
+  this->emit(attitude_); //in valueproducer.h  Sets output and calls notify();
+
 }  // end Update()
 
 /**
@@ -151,15 +162,17 @@ static const char SCHEMA[] PROGMEM = R"###({
  * @param doc JSON object to contain the configuration parameters
  * to be updated.
  */
-void AttitudeValues::get_configuration(JsonObject& doc) {
+/* changed for SensESPv3 TODO - look into replacement */
+/*void AttitudeValues::get_configuration(JsonObject& doc) {
   doc["report_interval"] = report_interval_ms_;
   doc["save_mag_cal"] = save_mag_cal_;
-}  // end get_configuration()
+}  // end get_configuration() */
 
 /**
  * @brief Fetch the JSON format used for holding the configuration.
  */
-String AttitudeValues::get_config_schema() { return FPSTR(SCHEMA); }
+/* changed for SensESPv3 TODO - look into replacement */
+//  String AttitudeValues::get_config_schema() { return FPSTR(SCHEMA); }
 
 /**
  * @brief Use the values stored in JSON object config to update
@@ -169,7 +182,8 @@ String AttitudeValues::get_config_schema() { return FPSTR(SCHEMA); }
  * to be updated.
  * @return True if successful; False if a parameter could not be found.
  */
-bool AttitudeValues::set_configuration(const JsonObject& config) {
+/* changed for SensESPv3 TODO - look into replacement */
+/*bool AttitudeValues::set_configuration(const JsonObject& config) {
   String expected[] = {"report_interval", "save_mag_cal"};
   for (auto str : expected) {
     if (!config.containsKey(str)) {
@@ -180,6 +194,7 @@ bool AttitudeValues::set_configuration(const JsonObject& config) {
   save_mag_cal_ = config["save_mag_cal"];
   return true;
 }  // end set_configuration()
+*/
 
 /**
  * @brief Constructor sets up the frequency of output and the Signal K path.
@@ -190,11 +205,16 @@ bool AttitudeValues::set_configuration(const JsonObject& config) {
  * configured.
  */
 MagCalValues::MagCalValues(OrientationSensor* orientation_sensor,
-                               uint report_interval_ms, String config_path)
+                          uint report_interval_ms,
+                          String config_path)
     : Sensor(config_path),
       orientation_sensor_{orientation_sensor},
       report_interval_ms_{report_interval_ms} {
-  load_configuration();
+  //removed for SensESPv3 load_configuration();
+    event_loop()->onRepeat(  report_interval_ms_,
+                             [this]() { this->Update(); }
+    );
+
 }  // end MagCalValues()
 
 /**
@@ -203,9 +223,11 @@ MagCalValues::MagCalValues(OrientationSensor* orientation_sensor,
  * The start() function is inherited from sensesp::Sensor, and is
  * automatically called when the SensESP app starts.
  */
-void MagCalValues::start() {
+/*void MagCalValues::start() {
   ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
 }
+*/
+
 
 /**
  * @brief Provides one MagCal reading from the orientation sensor.
@@ -228,8 +250,10 @@ void MagCalValues::Update() {
   mag_cal_.mag_solver = orientation_sensor_->sensor_interface_->GetMagneticCalSolver();
   mag_cal_.magnetic_inclination = orientation_sensor_->sensor_interface_->GetMagneticInclinationRad();
 
-  output = mag_cal_;
-  notify();
+  //output = mag_cal_;  //TODO figure out hoiw the outputs are managed
+  //notify();
+  this->emit(mag_cal_); //in valueproducer.h  Sets output and calls notify();
+
 }  // end Update()
 
 /**
@@ -254,14 +278,15 @@ static const char SCHEMA_MAGCAL[] PROGMEM = R"###({
  * @param doc JSON object to contain the configuration parameters
  * to be updated.
  */
-void MagCalValues::get_configuration(JsonObject& doc) {
+/*void MagCalValues::get_configuration(JsonObject& doc) {
   doc["report_interval"] = report_interval_ms_;
 }  // end get_configuration()
+*/
 
 /**
  * @brief Fetch the JSON format used for holding the configuration.
  */
-String MagCalValues::get_config_schema() { return FPSTR(SCHEMA_MAGCAL); }
+//  String MagCalValues::get_config_schema() { return FPSTR(SCHEMA_MAGCAL); }
 
 /**
  * @brief Use the values stored in JSON object config to update
@@ -271,7 +296,7 @@ String MagCalValues::get_config_schema() { return FPSTR(SCHEMA_MAGCAL); }
  * to be updated.
  * @return True if successful; False if a parameter could not be found.
  */
-bool MagCalValues::set_configuration(const JsonObject& config) {
+/*bool MagCalValues::set_configuration(const JsonObject& config) {
   String expected[] = {"report_interval"};
   for (auto str : expected) {
     if (!config.containsKey(str)) {
@@ -281,7 +306,7 @@ bool MagCalValues::set_configuration(const JsonObject& config) {
   report_interval_ms_ = config["report_interval"];
   return true;
 }  // end set_configuration()
-
+*/
 
 /**
  * @brief Constructor sets up the frequency of output and the Signal K path.
@@ -292,17 +317,6 @@ bool MagCalValues::set_configuration(const JsonObject& config) {
  * @param config_path RESTful path by which reporting frequency can be
  * configured.
  */
-OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
-                                     OrientationValType val_type,
-                                     uint report_interval_ms, String config_path)
-    : FloatSensor(config_path),
-      orientation_sensor_{orientation_sensor},
-      value_type_{val_type},
-      report_interval_ms_{report_interval_ms} {
-  load_configuration();
-  save_mag_cal_ = 0;
-
-}  // end OrientationValues()
 
 /**
  * @brief Starts periodic output of orientation parameter.
@@ -310,20 +324,64 @@ OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
  * The start() function is inherited from sensesp::Sensor, and is
  * automatically called when the SensESP app starts.
  */
-void OrientationValues::start() {
+/*void OrientationValues::start() {
   ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
 }
+*/
+
+
 
 /**
- * @brief Provides one orientation parameter reading from the sensor.
+ * @brief Get the current sensor configuration and place it in a JSON
+ * object that can then be stored in non-volatile memory.
  *
- * value_type_ determines which particular parameter is output.
- * Readings are obtained using the sensor fusion library's get() methods
- * and assigned to the output variable that passes data from Producers
- * to Consumers. Consumers of the orientation data are then informed
- * by the call to notify()
+ * @param doc JSON object to contain the configuration parameters
+ * to be updated.
  */
-void OrientationValues::Update() {
+/*void OrientationValues::get_configuration(JsonObject& doc) {
+  doc["report_interval"] = report_interval_ms_;
+  doc["save_mag_cal"] = save_mag_cal_;
+}  // end get_configuration()
+*/
+/**
+ * @brief Fetch the JSON format used for holding the configuration.
+ */
+//String OrientationValues::get_config_schema() { return FPSTR(SCHEMA); }
+
+/**
+ * @brief Use the values stored in JSON object config to update
+ * the appropriate member variables.
+ *
+ * @param config JSON object containing the configuration parameters
+ * to be updated.
+ * @return True if successful; False if a parameter could not be found.
+ */
+/*bool OrientationValues::set_configuration(const JsonObject& config) {
+  String expected[] = {"report_interval", "save_mag_cal"};
+  for (auto str : expected) {
+    if (!config.containsKey(str)) {
+      return false;
+    }
+  }
+  report_interval_ms_ = config["report_interval"];
+  save_mag_cal_ = config["save_mag_cal"];
+  return true;
+}
+*/
+OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
+                                     OrientationValType val_type,
+                                     int report_interval_ms)
+    {
+      orientation_sensor_ = orientation_sensor;
+      value_type_ = val_type;
+      report_interval_ms_ = report_interval_ms; 
+      throttlePrint_ = 0;
+  //load_configuration();
+
+  save_mag_cal_ = 0;
+
+}  // end OrientationValues()
+float OrientationValues::ReportValue() {
   //check whether magnetic calibration has been requested to be saved or deleted
   if( 1 == save_mag_cal_ ) {
     orientation_sensor_->sensor_interface_->InjectCommand("SVMC");
@@ -332,10 +390,17 @@ void OrientationValues::Update() {
   }
   save_mag_cal_ = 0;  // set flag back to zero so we don't repeat save/delete
   //check which type of parameter is requested, and pass it on
+  
+  float output = 0.0;
+
   switch (value_type_) {
     case (kCompassHeading):
       output = orientation_sensor_->sensor_interface_->GetHeadingRadians();
-      break;
+        throttlePrint_++;
+        if( (throttlePrint_ % 50) == 0 )
+        { debugI("Angle2: %f", output);
+        }
+        break;
     case (kRoll):
       output = orientation_sensor_->sensor_interface_->GetRollRadians();
       break;
@@ -387,48 +452,11 @@ void OrientationValues::Update() {
       output = orientation_sensor_->sensor_interface_->GetMagneticNoiseCovariance();
       break;
     default:
-      return; //skip the notify(), due to unrecognized value type
+      break; 
   }
-  if (orientation_sensor_->sensor_interface_->IsDataValid()) {
-    notify();  // only pass on the data if it is valid
-  }
+  return output;
 }  // end Update()
 
-/**
- * @brief Get the current sensor configuration and place it in a JSON
- * object that can then be stored in non-volatile memory.
- *
- * @param doc JSON object to contain the configuration parameters
- * to be updated.
- */
-void OrientationValues::get_configuration(JsonObject& doc) {
-  doc["report_interval"] = report_interval_ms_;
-  doc["save_mag_cal"] = save_mag_cal_;
-}  // end get_configuration()
 
-/**
- * @brief Fetch the JSON format used for holding the configuration.
- */
-String OrientationValues::get_config_schema() { return FPSTR(SCHEMA); }
-
-/**
- * @brief Use the values stored in JSON object config to update
- * the appropriate member variables.
- *
- * @param config JSON object containing the configuration parameters
- * to be updated.
- * @return True if successful; False if a parameter could not be found.
- */
-bool OrientationValues::set_configuration(const JsonObject& config) {
-  String expected[] = {"report_interval", "save_mag_cal"};
-  for (auto str : expected) {
-    if (!config.containsKey(str)) {
-      return false;
-    }
-  }
-  report_interval_ms_ = config["report_interval"];
-  save_mag_cal_ = config["save_mag_cal"];
-  return true;
-}
 
 } //namespace sensesp
