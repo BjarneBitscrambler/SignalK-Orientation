@@ -5,9 +5,6 @@
 #ifndef _signalk_orientation_H_
 #define _signalk_orientation_H_
 
-#include "sensesp/system/valueproducer.h"
-
-namespace sensesp {
 /**
  * Attitude struct contains the yaw, pitch, and roll values from
  * the orientation sensor-fusion algorithm. Additionally,
@@ -28,7 +25,7 @@ struct Attitude {
                ///< is positive.
 };
 
-typedef ValueProducer<Attitude> AttitudeProducer;
+//typedef ValueProducer<Attitude> AttitudeProducer;
 
 /**
  * MagCal struct contains the values relating to magnetic calibration
@@ -57,8 +54,7 @@ struct MagCal {
                    ///< in set [0,4,7,10]
 };
 
-typedef ValueProducer<MagCal> MagCalProducer;
+//typedef ValueProducer<MagCal> MagCalProducer;
 
-} // namespace sensesp
 
 #endif  // _signalk_orientation_H_

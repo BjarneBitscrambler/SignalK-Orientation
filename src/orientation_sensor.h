@@ -9,11 +9,8 @@
 #define orientation_sensor_H_
 
 #include "sensor_fusion_class.h"  // for OrientationSensorFusion-ESP library
-
-#include "sensesp/sensors/sensor.h"
 #include "signalk_orientation.h"
 
-namespace sensesp {
 /**
  * @brief OrientationSensor represents a 9-Degrees-of-Freedom sensor
  * (magnetometer, accelerometer, and gyroscope).
@@ -37,9 +34,9 @@ class OrientationSensor {
   OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
                     uint8_t accel_mag_i2c_addr, uint8_t gyro_i2c_addr);
   SensorFusion* sensor_interface_;  ///< sensor's Fusion Library interface
-
+  void ReadAndProcessSensors(void);  ///< reads sensor hardware and runs fusion algorithm
+  int GetFusionRateHz(void);
  private:
-  void ReadAndProcessSensors(void);  ///< reads sensor and runs fusion algorithm
 };
 
 /**
@@ -49,24 +46,20 @@ class OrientationSensor {
  * in one Signal K message. The units are radians.
  */
 //bj removed  public virtual AttitudeProducer, 
-class AttitudeValues : public  sensesp::Sensor <Attitude> {
+class AttitudeValues {
  public:
-  AttitudeValues(OrientationSensor* orientation_sensor,
-                uint report_interval_ms = 100,
-                String config_path = "");
+  AttitudeValues(OrientationSensor* orientation_sensor);
 //sensESP v3 removes start. Should start emitting data in constructor I think
   //void start() override final;  ///< starts periodic outputs of Attitude
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
+  Attitude GetAttitude(void);
 
  private:
-  void Update(void);  ///< fetches current attitude and notifies consumer
-  //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
   //virtual void get_configuration(JsonObject& doc) override;
   //virtual bool set_configuration(const JsonObject& config) override;
   //virtual String get_config_schema() override;
   Attitude attitude_;  ///< struct storing the current yaw,pitch,roll values
-  uint report_interval_ms_;  ///< interval between attitude updates to Signal K
   int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
 
 };  // end class AttitudeValues
@@ -80,24 +73,19 @@ class AttitudeValues : public  sensesp::Sensor <Attitude> {
  * environment.
  */
 //removed : public MagCalProducer,
-class MagCalValues : public sensesp::Sensor <MagCal>{
+class MagCalValues 
+{
  public:
-  MagCalValues(OrientationSensor* orientation_sensor,
-                uint report_interval_ms = 100,
-                String config_path = "");
-//sensESP v3 removes start(). Presumable have to start in Constructor
-  //void start() override final;  ///< starts periodic outputs of MagCal values
+  MagCalValues(OrientationSensor* orientation_sensor);
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
-
+  MagCal GetMagCal(void);
  private:
-  void Update(void);  ///< fetches current attitude and notifies consumer
   //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
   //virtual void get_configuration(JsonObject& doc) override;
   //virtual bool set_configuration(const JsonObject& config) override;
   //virtual String get_config_schema() override;
   MagCal mag_cal_;  ///< struct storing the current magnetic calibration parameters
-  uint report_interval_ms_;  ///< interval between attitude updates to Signal K
 
 };  // end class MagCalValues
 
@@ -137,14 +125,12 @@ class OrientationValues  {
     kMagNoiseCovariance   ///< deviation of current reading from calibrated geomag sphere
   };
   OrientationValues(OrientationSensor* orientation_sensor,
-                    OrientationValType value_type = kCompassHeading,
-                    int report_interval_ms = 100);
+                    OrientationValType value_type = kCompassHeading);
 //sensESP v3 removes start()
   //void start() override final;  ///< starts periodic outputs of Attitude
   OrientationSensor*
       orientation_sensor_;  ///< Pointer to the orientation sensor
- float ReportValue(
-      void);  ///< fetches current orientation parameter and notifies consumer
+ float ReportValue(void);  ///< fetches current orientation parameter
  
  private:
   //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
@@ -159,7 +145,5 @@ class OrientationValues  {
 
 };  // end class OrientationValues2
 
-
-} // namespace sensesp
 
 #endif  // ORIENTATION_SENSOR_H_

@@ -2,11 +2,12 @@
  *  @brief Orientation sensor interface to SensESP
  */
 
+#define LOG_LOCAL_LEVEL ESP_LOG_INFO
+static const char* TAG = "orientation_sensor.cpp";
+#include "esp_log.h"
+
 #include "orientation_sensor.h"
 
-#include "sensesp.h"
-
-namespace sensesp {
   
 /**
  * @brief Constructor sets up the I2C communications to the sensor and
@@ -38,26 +39,35 @@ OrientationSensor::OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
                                        SensorType::kThermometer) &&
       sensor_interface_->InstallSensor(gyro_i2c_addr, SensorType::kGyroscope);
   if (!success) {
-    debugE("Trouble installing sensors.");
+    //debugE("Trouble installing sensors.");
+    // ...
+    ESP_LOGE(TAG, "Trouble installing sensors.");
   } else {
     sensor_interface_->Begin(pin_i2c_sda, pin_i2c_scl);
-    debugI("Sensors connected & Fusion ready");
+    //debugI("Sensors connected & Fusion ready");
+    ESP_LOGI(TAG, "Sensors connected & Fusion ready");
 
     // The Fusion Library, in build.h, defines how fast the ICs generate new
     // orientation data and how fast the fusion algorithm runs, using FUSION_HZ.
     // Usually this rate should be the same as ReadAndProcessSensors() is
     // called.
-    const uint32_t kFusionIntervalMs = 1000.0 / FUSION_HZ;
-    // Start periodic reads of sensor and running of fusion algorithm.
-    /* SensESPv3 changed how React is used
-    ReactESP::app->onRepeat(kFusionIntervalMs,
-                 [this]() { this->ReadAndProcessSensors(); }); */
-    event_loop()->onRepeat(  kFusionIntervalMs,
-                             [this]() { this->ReadAndProcessSensors(); }
-                          );
+    // We rely on the main program using this library to call ReadAndProcessSensors()
+    // at the rate given by a call to GetFusionRateHz().  
+    // Calls to fetch the Orientation values then should run at not faster than the
+    // rate at which ReadAndProcessSensors() is called. e.g. retrieving attitude values
+    // at 10 Hz is fine when the fusion rate is 40 Hz, but retrieving attitude values
+    // at 50 Hz would result in duplicate values.
   }
 
 }  // end OrientationSensor()
+
+/**
+ * @brief Return how fast we read the physical sensor and run the fusion algorithm
+ */
+int OrientationSensor::GetFusionRateHz(void) {
+  return FUSION_HZ;
+
+}  // end ReadAndProcessSensors()
 
 /**
  * @brief Read the Sensors and calculate orientation parameters
@@ -69,48 +79,25 @@ void OrientationSensor::ReadAndProcessSensors(void) {
 }  // end ReadAndProcessSensors()
 
 /**
- * @brief Constructor sets up the frequency of output and the Signal K path.
+ * @brief Constructor
  *
  * @param orientation_sensor Pointer to the physical sensor's interface
- * @param report_interval_ms Interval between output reports
- * @param config_path RESTful path by which reporting frequency can be
- * configured.
  */
-AttitudeValues::AttitudeValues(OrientationSensor* orientation_sensor,
-                               uint report_interval_ms,
-                              String config_path)
-    : Sensor(config_path),
-      orientation_sensor_{orientation_sensor},
-      report_interval_ms_{report_interval_ms} {
-  //SensESPv3 changed how Config is done  load_configuration();
+AttitudeValues::AttitudeValues(OrientationSensor* orientation_sensor)
+    { orientation_sensor_ = orientation_sensor;
       save_mag_cal_ = 0;
-      event_loop()->onRepeat(  report_interval_ms_,
-                             [this]() { this->Update(); }
-                          );
-
 }  // end AttitudeValues()
 
+
 /**
- * @brief Starts periodic output of Attitude parameters.
- *
- * The start() function is inherited from sensesp::Sensor, and is
- * automatically called when the SensESP app starts.
- */
-/*void AttitudeValues::start() {
-  ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
-}
-*/
-/**
- * @brief Provides one Attitude reading from the orientation sensor.
+ * @brief Assembles and returns current Attitude reading.
  *
  * Readings are obtained using the sensor fusion library's Get_() methods
- * and assigned to the output variable that passes data from Producers
- * to Consumers. Consumers of the attitude data are then informed
- * by the call to notify(). If data are not valid (e.g. sensor not
- * functioning), a struct member is set to false so when the Signal K
- * message contents are assembled by as_signalk(),they can reflect that. 
+ * and assigned to the output variable attitude_
+ * If data are not valid (e.g. sensor not
+ * functioning), a struct member is set to false. 
  */
-void AttitudeValues::Update() {
+Attitude AttitudeValues::GetAttitude() {
   //check whether magnetic calibration has been requested to be saved or deleted
   if( 1 == save_mag_cal_ ) {
     orientation_sensor_->sensor_interface_->InjectCommand("SVMC");
@@ -125,12 +112,9 @@ void AttitudeValues::Update() {
       orientation_sensor_->sensor_interface_->GetRollRadians();
   attitude_.pitch =
       orientation_sensor_->sensor_interface_->GetPitchRadians();
+  return attitude_;
 
-  //output = attitude_;  //output is done differently in SensESPv3  as_signalk_json()
-  //notify();
-  this->emit(attitude_); //in valueproducer.h  Sets output and calls notify();
-
-}  // end Update()
+}  // end Get()
 
 /**
  * @brief Define the format for the Orientation value producers.
@@ -197,49 +181,26 @@ static const char SCHEMA[] PROGMEM = R"###({
 */
 
 /**
- * @brief Constructor sets up the frequency of output and the Signal K path.
+ * @brief Constructor
  *
  * @param orientation_sensor Pointer to the physical sensor's interface
- * @param report_interval_ms Interval between output reports
- * @param config_path RESTful path by which reporting frequency can be
- * configured.
  */
-MagCalValues::MagCalValues(OrientationSensor* orientation_sensor,
-                          uint report_interval_ms,
-                          String config_path)
-    : Sensor(config_path),
-      orientation_sensor_{orientation_sensor},
-      report_interval_ms_{report_interval_ms} {
-  //removed for SensESPv3 load_configuration();
-    event_loop()->onRepeat(  report_interval_ms_,
-                             [this]() { this->Update(); }
-    );
+MagCalValues::MagCalValues(OrientationSensor* orientation_sensor)       
+{ orientation_sensor_ = orientation_sensor;
 
 }  // end MagCalValues()
 
-/**
- * @brief Starts periodic output of MagCal parameters.
- *
- * The start() function is inherited from sensesp::Sensor, and is
- * automatically called when the SensESP app starts.
- */
-/*void MagCalValues::start() {
-  ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
-}
-*/
-
 
 /**
- * @brief Provides one MagCal reading from the orientation sensor.
+ * @brief Assembles and returns current MagCal reading from the orientation sensor.
  *
  * Readings are obtained using the sensor fusion library's Get_() methods
- * and assigned to the output variable that passes data from Producers
- * to Consumers. Consumers of the magcal data are then informed
- * by the call to notify(). If data are not valid (e.g. sensor not
+ * and assigned to the mag_cal_ variable
+ * If data are not valid (e.g. sensor not
  * functioning), a struct member is set to false so when the Signal K
  * message contents are assembled by as_signalk(),they can reflect that. 
  */
-void MagCalValues::Update() {
+MagCal MagCalValues::GetMagCal() {
   mag_cal_.is_data_valid =
       orientation_sensor_->sensor_interface_->IsDataValid();
   mag_cal_.cal_fit_error = orientation_sensor_->sensor_interface_->GetMagneticFitError() / 100.0;
@@ -249,13 +210,9 @@ void MagCalValues::Update() {
   mag_cal_.mag_noise_covariance = orientation_sensor_->sensor_interface_->GetMagneticNoiseCovariance();
   mag_cal_.mag_solver = orientation_sensor_->sensor_interface_->GetMagneticCalSolver();
   mag_cal_.magnetic_inclination = orientation_sensor_->sensor_interface_->GetMagneticInclinationRad();
+  return mag_cal_; //in valueproducer.h  Sets output and calls notify();
 
-  //output = mag_cal_;  //TODO figure out hoiw the outputs are managed
-  //notify();
-  this->emit(mag_cal_); //in valueproducer.h  Sets output and calls notify();
-
-}  // end Update()
-
+}  // end GetMagCal()
 /**
  * @brief Define the format for the MagCal value producer.
  *
@@ -369,12 +326,10 @@ static const char SCHEMA_MAGCAL[] PROGMEM = R"###({
 }
 */
 OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
-                                     OrientationValType val_type,
-                                     int report_interval_ms)
+                                     OrientationValType val_type)
     {
       orientation_sensor_ = orientation_sensor;
-      value_type_ = val_type;
-      report_interval_ms_ = report_interval_ms; 
+      value_type_ = val_type; 
       throttlePrint_ = 0;
   //load_configuration();
 
@@ -398,7 +353,7 @@ float OrientationValues::ReportValue() {
       output = orientation_sensor_->sensor_interface_->GetHeadingRadians();
         throttlePrint_++;
         if( (throttlePrint_ % 50) == 0 )
-        { debugI("Angle2: %f", output);
+        { ESP_LOGI(TAG, "Angle2: %f", output);         
         }
         break;
     case (kRoll):
@@ -456,7 +411,3 @@ float OrientationValues::ReportValue() {
   }
   return output;
 }  // end Update()
-
-
-
-} //namespace sensesp
