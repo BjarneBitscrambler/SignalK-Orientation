@@ -39,57 +39,6 @@ class OrientationSensor {
  private:
 };
 
-/**
- * @brief AttitudeValues reads and outputs attitude (yaw,pitch,roll) parameters.
- *
- * The three parameters are stored in an Attitude struct, and sent together
- * in one Signal K message. The units are radians.
- */
-//bj removed  public virtual AttitudeProducer, 
-class AttitudeValues {
- public:
-  AttitudeValues(OrientationSensor* orientation_sensor);
-//sensESP v3 removes start. Should start emitting data in constructor I think
-  //void start() override final;  ///< starts periodic outputs of Attitude
-  OrientationSensor*
-      orientation_sensor_;  ///< Pointer to the orientation sensor
-  Attitude GetAttitude(void);
-
- private:
-  //virtual void get_configuration(JsonObject& doc) override;
-  //virtual bool set_configuration(const JsonObject& config) override;
-  //virtual String get_config_schema() override;
-  Attitude attitude_;  ///< struct storing the current yaw,pitch,roll values
-  int8_t save_mag_cal_;      ///< Flag for saving current magnetic calibration
-
-};  // end class AttitudeValues
-
-/**
- * @brief MagCalValues reads and outputs magnetic calibration parameters.
- *
- * The parameters are stored in an MagCal struct, and sent together
- * in one Signal K message. They are useful in determining how well
- * the existing magnetic calibration suits the current magnetic
- * environment.
- */
-//removed : public MagCalProducer,
-class MagCalValues 
-{
- public:
-  MagCalValues(OrientationSensor* orientation_sensor);
-  OrientationSensor*
-      orientation_sensor_;  ///< Pointer to the orientation sensor
-  MagCal GetMagCal(void);
- private:
-  //SensESPv3 requires inheriting from Configurable and explicitly calling ConfigItem()
-  //virtual void get_configuration(JsonObject& doc) override;
-  //virtual bool set_configuration(const JsonObject& config) override;
-  //virtual String get_config_schema() override;
-  MagCal mag_cal_;  ///< struct storing the current magnetic calibration parameters
-
-};  // end class MagCalValues
-
-
 
 /**
  * @brief OrientationValues reads and outputs orientation parameters.
