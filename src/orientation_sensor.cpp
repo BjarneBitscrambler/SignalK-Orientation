@@ -78,43 +78,6 @@ void OrientationSensor::ReadAndProcessSensors(void) {
 
 }  // end ReadAndProcessSensors()
 
-/**
- * @brief Constructor
- *
- * @param orientation_sensor Pointer to the physical sensor's interface
- */
-AttitudeValues::AttitudeValues(OrientationSensor* orientation_sensor)
-    { orientation_sensor_ = orientation_sensor;
-      save_mag_cal_ = 0;
-}  // end AttitudeValues()
-
-
-/**
- * @brief Assembles and returns current Attitude reading.
- *
- * Readings are obtained using the sensor fusion library's Get_() methods
- * and assigned to the output variable attitude_
- * If data are not valid (e.g. sensor not
- * functioning), a struct member is set to false. 
- */
-Attitude AttitudeValues::GetAttitude() {
-  //check whether magnetic calibration has been requested to be saved or deleted
-  if( 1 == save_mag_cal_ ) {
-    orientation_sensor_->sensor_interface_->InjectCommand("SVMC");
-  }else if( -1 == save_mag_cal_ ) {
-    orientation_sensor_->sensor_interface_->InjectCommand("ERMC");
-  }
-  save_mag_cal_ = 0;  // set flag back to zero so we don't repeat save/delete
-  attitude_.is_data_valid =
-      orientation_sensor_->sensor_interface_->IsDataValid();
-  attitude_.yaw = orientation_sensor_->sensor_interface_->GetHeadingRadians();
-  attitude_.roll =
-      orientation_sensor_->sensor_interface_->GetRollRadians();
-  attitude_.pitch =
-      orientation_sensor_->sensor_interface_->GetPitchRadians();
-  return attitude_;
-
-}  // end Get()
 
 /**
  * @brief Define the format for the Orientation value producers.
@@ -139,192 +102,7 @@ static const char SCHEMA[] PROGMEM = R"###({
     }
   })###";
 
-/**
- * @brief Get the current sensor configuration and place it in a JSON
- * object that can then be stored in non-volatile memory.
- * 
- * @param doc JSON object to contain the configuration parameters
- * to be updated.
- */
-/* changed for SensESPv3 TODO - look into replacement */
-/*void AttitudeValues::get_configuration(JsonObject& doc) {
-  doc["report_interval"] = report_interval_ms_;
-  doc["save_mag_cal"] = save_mag_cal_;
-}  // end get_configuration() */
 
-/**
- * @brief Fetch the JSON format used for holding the configuration.
- */
-/* changed for SensESPv3 TODO - look into replacement */
-//  String AttitudeValues::get_config_schema() { return FPSTR(SCHEMA); }
-
-/**
- * @brief Use the values stored in JSON object config to update
- * the appropriate member variables.
- *
- * @param config JSON object containing the configuration parameters
- * to be updated.
- * @return True if successful; False if a parameter could not be found.
- */
-/* changed for SensESPv3 TODO - look into replacement */
-/*bool AttitudeValues::set_configuration(const JsonObject& config) {
-  String expected[] = {"report_interval", "save_mag_cal"};
-  for (auto str : expected) {
-    if (!config.containsKey(str)) {
-      return false;
-    }
-  }
-  report_interval_ms_ = config["report_interval"];
-  save_mag_cal_ = config["save_mag_cal"];
-  return true;
-}  // end set_configuration()
-*/
-
-/**
- * @brief Constructor
- *
- * @param orientation_sensor Pointer to the physical sensor's interface
- */
-MagCalValues::MagCalValues(OrientationSensor* orientation_sensor)       
-{ orientation_sensor_ = orientation_sensor;
-
-}  // end MagCalValues()
-
-
-/**
- * @brief Assembles and returns current MagCal reading from the orientation sensor.
- *
- * Readings are obtained using the sensor fusion library's Get_() methods
- * and assigned to the mag_cal_ variable
- * If data are not valid (e.g. sensor not
- * functioning), a struct member is set to false so when the Signal K
- * message contents are assembled by as_signalk(),they can reflect that. 
- */
-MagCal MagCalValues::GetMagCal() {
-  mag_cal_.is_data_valid =
-      orientation_sensor_->sensor_interface_->IsDataValid();
-  mag_cal_.cal_fit_error = orientation_sensor_->sensor_interface_->GetMagneticFitError() / 100.0;
-  mag_cal_.cal_fit_error_trial = orientation_sensor_->sensor_interface_->GetMagneticFitErrorTrial() / 100.0;
-  mag_cal_.mag_field_magnitude = orientation_sensor_->sensor_interface_->GetMagneticBMag();
-  mag_cal_.mag_field_magnitude_trial = orientation_sensor_->sensor_interface_->GetMagneticBMagTrial();
-  mag_cal_.mag_noise_covariance = orientation_sensor_->sensor_interface_->GetMagneticNoiseCovariance();
-  mag_cal_.mag_solver = orientation_sensor_->sensor_interface_->GetMagneticCalSolver();
-  mag_cal_.magnetic_inclination = orientation_sensor_->sensor_interface_->GetMagneticInclinationRad();
-  return mag_cal_; //in valueproducer.h  Sets output and calls notify();
-
-}  // end GetMagCal()
-/**
- * @brief Define the format for the MagCal value producer.
- *
- */
-static const char SCHEMA_MAGCAL[] PROGMEM = R"###({
-    "type": "object",
-    "properties": {
-        "report_interval": { 
-          "title": "Report Interval", 
-          "type": "number", 
-          "description": "Milliseconds between outputs of this parameter" 
-        }
-    }
-  })###";
-
-/**
- * @brief Get the current sensor configuration and place it in a JSON
- * object that can then be stored in non-volatile memory.
- * 
- * @param doc JSON object to contain the configuration parameters
- * to be updated.
- */
-/*void MagCalValues::get_configuration(JsonObject& doc) {
-  doc["report_interval"] = report_interval_ms_;
-}  // end get_configuration()
-*/
-
-/**
- * @brief Fetch the JSON format used for holding the configuration.
- */
-//  String MagCalValues::get_config_schema() { return FPSTR(SCHEMA_MAGCAL); }
-
-/**
- * @brief Use the values stored in JSON object config to update
- * the appropriate member variables.
- *
- * @param config JSON object containing the configuration parameters
- * to be updated.
- * @return True if successful; False if a parameter could not be found.
- */
-/*bool MagCalValues::set_configuration(const JsonObject& config) {
-  String expected[] = {"report_interval"};
-  for (auto str : expected) {
-    if (!config.containsKey(str)) {
-      return false;
-    }
-  }
-  report_interval_ms_ = config["report_interval"];
-  return true;
-}  // end set_configuration()
-*/
-
-/**
- * @brief Constructor sets up the frequency of output and the Signal K path.
- *
- * @param orientation_sensor Pointer to the physical sensor's interface
- * @param val_type The type of orientation parameter to be sent
- * @param report_interval_ms Interval between output reports
- * @param config_path RESTful path by which reporting frequency can be
- * configured.
- */
-
-/**
- * @brief Starts periodic output of orientation parameter.
- *
- * The start() function is inherited from sensesp::Sensor, and is
- * automatically called when the SensESP app starts.
- */
-/*void OrientationValues::start() {
-  ReactESP::app->onRepeat(report_interval_ms_, [this]() { this->Update(); });
-}
-*/
-
-
-
-/**
- * @brief Get the current sensor configuration and place it in a JSON
- * object that can then be stored in non-volatile memory.
- *
- * @param doc JSON object to contain the configuration parameters
- * to be updated.
- */
-/*void OrientationValues::get_configuration(JsonObject& doc) {
-  doc["report_interval"] = report_interval_ms_;
-  doc["save_mag_cal"] = save_mag_cal_;
-}  // end get_configuration()
-*/
-/**
- * @brief Fetch the JSON format used for holding the configuration.
- */
-//String OrientationValues::get_config_schema() { return FPSTR(SCHEMA); }
-
-/**
- * @brief Use the values stored in JSON object config to update
- * the appropriate member variables.
- *
- * @param config JSON object containing the configuration parameters
- * to be updated.
- * @return True if successful; False if a parameter could not be found.
- */
-/*bool OrientationValues::set_configuration(const JsonObject& config) {
-  String expected[] = {"report_interval", "save_mag_cal"};
-  for (auto str : expected) {
-    if (!config.containsKey(str)) {
-      return false;
-    }
-  }
-  report_interval_ms_ = config["report_interval"];
-  save_mag_cal_ = config["save_mag_cal"];
-  return true;
-}
-*/
 OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
                                      OrientationValType val_type)
     {
@@ -349,11 +127,12 @@ float OrientationValues::ReportValue() {
   float output = 0.0;
 
   switch (value_type_) {
-    case (kCompassHeading):
+    case (kCompassHeading):    
+    case (kYaw):
       output = orientation_sensor_->sensor_interface_->GetHeadingRadians();
         throttlePrint_++;
         if( (throttlePrint_ % 50) == 0 )
-        { ESP_LOGI(TAG, "Angle2: %f", output);         
+        { ESP_LOGI(TAG, "Yaw: %f", output);         
         }
         break;
     case (kRoll):
