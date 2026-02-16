@@ -6,8 +6,7 @@
 
 #ifndef TAG
 //avoid conflicts if TAG (used by logging fcns to indicate source) is defined elsewhere.
-static const char* TAG = __FILENAME__
-//"orientation_sensor.cpp";
+static const char* TAG = "orientation_sensor.cpp";
 #endif
 
 #include "esp_log.h"
