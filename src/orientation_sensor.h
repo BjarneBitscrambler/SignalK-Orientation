@@ -8,7 +8,9 @@
 #ifndef orientation_sensor_H_
 #define orientation_sensor_H_
 
-#define BOARD_USES_HW_GPIO_NUMBERS 1
+#ifndef BOARD_USES_HW_GPIO_NUMBERS
+#define BOARD_USES_HW_GPIO_NUMBERS
+#endif
 
 #include "sensor_fusion_class.h"  // for OrientationSensorFusion-ESP library
 #include "signalk_orientation.h"
