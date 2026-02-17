@@ -1,18 +1,7 @@
 # Name,   Type, SubType,  Offset,   Size,     Flags
 nvs,      data, nvs,        0x9000,   0x5000,
 otadata,  data, ota,        0xe000,   0x2000,
-app0,     app,  ota_0,     0x10000, 0x300000,
-app1,     app,  ota_1,    0x310000, 0x300000,
-spiffs,   data, spiffs,   0x610000, 0x960000,
-factory,  app,  factory,  0xF70000,  0x80000,
-coredump, data, coredump, 0xFF0000,  0x10000,
-# based on app3M_spiffs9M_fact512k_16MB
-# Partitions Info:  (seen on boot)
-# ------------------------------------------ 
-#                nvs : addr: 0x00009000, size:    20.0 KB, type: DATA, subtype: NVS
-#            otadata : addr: 0x0000E000, size:     8.0 KB, type: DATA, subtype: OTA
-#               app0 : addr: 0x00010000, size:  3072.0 KB, type:  APP, subtype: OTA_0
-#               app1 : addr: 0x00310000, size:  3072.0 KB, type:  APP, subtype: OTA_1
-#               ffat : addr: 0x00610000, size:  9600.0 KB, type: DATA, subtype: FAT
-#            factory : addr: 0x00F70000, size:   512.0 KB, type:  APP, subtype: FACTORY
-#           coredump : addr: 0x00FF0000, size:    64.0 KB, type: DATA, subtype: COREDUMP
+app0,     app,  ota_0,     0x10000, 0x1e0000,
+app1,     app,  ota_1,    0x1F0000, 0x1e0000,
+spiffs,   data, spiffs,   0x3d0000, 0x20000,
+coredump, data, coredump, 0x3F0000,  0x10000,
