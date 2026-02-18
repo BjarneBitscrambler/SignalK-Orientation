@@ -1,5 +1,0 @@
-<map id="AttitudeValues" name="AttitudeValues">
-<area shape="rect" id="node1" title="AttitudeValues reads and outputs attitude (yaw,pitch,roll) parameters." alt="" coords="73,80,191,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,136,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="160,5,227,32"/>
-</map>

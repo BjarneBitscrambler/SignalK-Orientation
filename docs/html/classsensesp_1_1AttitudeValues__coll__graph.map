@@ -1,7 +1,0 @@
-<map id="sensesp::AttitudeValues" name="sensesp::AttitudeValues">
-<area shape="rect" id="node1" title="AttitudeValues reads and outputs attitude (yaw,pitch,roll) parameters." alt="" coords="228,95,407,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,136,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="161,5,287,32"/>
-<area shape="rect" id="node4" href="$classsensesp_1_1OrientationSensor.html" title="OrientationSensor represents a 9&#45;Degrees&#45;of&#45;Freedom sensor (magnetometer, accelerometer,..." alt="" coords="312,5,512,32"/>
-<area shape="rect" id="node5" href="$structsensesp_1_1Attitude.html" title=" " alt="" coords="537,5,671,32"/>
-</map>

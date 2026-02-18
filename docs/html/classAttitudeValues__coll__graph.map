@@ -1,7 +1,0 @@
-<map id="AttitudeValues" name="AttitudeValues">
-<area shape="rect" id="node1" title="AttitudeValues reads and outputs attitude (yaw,pitch,roll) parameters." alt="" coords="181,95,299,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,136,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="160,5,227,32"/>
-<area shape="rect" id="node4" href="$structAttitude.html" title=" " alt="" coords="251,5,325,32"/>
-<area shape="rect" id="node5" href="$classOrientationSensor.html" title="OrientationSensor represents a 9&#45;Degrees&#45;of&#45;Freedom sensor (magnetometer, accelerometer,..." alt="" coords="349,5,488,32"/>
-</map>

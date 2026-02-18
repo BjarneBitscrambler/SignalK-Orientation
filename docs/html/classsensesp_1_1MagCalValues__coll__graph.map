@@ -1,7 +1,0 @@
-<map id="sensesp::MagCalValues" name="sensesp::MagCalValues">
-<area shape="rect" id="node1" title="MagCalValues reads and outputs magnetic calibration parameters." alt="" coords="181,95,357,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,133,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="157,5,224,32"/>
-<area shape="rect" id="node4" href="$classsensesp_1_1OrientationSensor.html" title="OrientationSensor represents a 9&#45;Degrees&#45;of&#45;Freedom sensor (magnetometer, accelerometer,..." alt="" coords="248,5,448,32"/>
-<area shape="rect" id="node5" href="$structsensesp_1_1MagCal.html" title=" " alt="" coords="473,5,605,32"/>
-</map>

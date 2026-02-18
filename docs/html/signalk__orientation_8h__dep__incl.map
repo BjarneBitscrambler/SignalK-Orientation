@@ -1,7 +1,0 @@
-<map id="src/signalk_orientation.h" name="src/signalk_orientation.h">
-<area shape="rect" id="node1" title="Vessel orientation data structures definition file." alt="" coords="7,5,190,32"/>
-<area shape="rect" id="node2" href="$orientation__sensor_8h.html" title="Orientation sensor interface to SensESP." alt="" coords="200,80,379,107"/>
-<area shape="rect" id="node3" href="$main_8cpp.html" title="Orientation output in Signal K format via SensESP. This file provides examples for using the Orientat..." alt="" coords="46,155,151,181"/>
-<area shape="rect" id="node5" href="$signalk__output_8h.html" title="Defines the Value Producers that handle Attitude and Magnetic Calibration parameters...." alt="" coords="22,80,175,107"/>
-<area shape="rect" id="node4" href="$orientation__sensor_8cpp.html" title="Orientation sensor interface to SensESP." alt="" coords="193,155,386,181"/>
-</map>

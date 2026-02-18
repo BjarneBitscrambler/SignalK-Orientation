@@ -1,0 +1,11 @@
+<map id="src/orientation_sensor.cpp" name="src/orientation_sensor.cpp">
+<area shape="rect" id="Node000001" title="Orientation sensor interface to SensESP." alt="" coords="23,5,215,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,89,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,33,71,71,67,67,106,29"/>
+<area shape="rect" id="Node000003" href="$orientation__sensor_8h.html" title="Orientation sensor interface to SensESP." alt="" coords="114,79,269,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="133,29,172,67,168,71,129,33"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="16,152,180,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="178,106,126,146,122,141,175,102"/>
+<area shape="rect" id="Node000005" href="$signalk__orientation_8h.html" title="Vessel orientation data structures definition file." alt="" coords="204,152,363,177"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="208,102,259,141,256,146,204,106"/>
+</map>

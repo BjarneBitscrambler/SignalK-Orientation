@@ -1,5 +1,0 @@
-<map id="OrientationValues" name="OrientationValues">
-<area shape="rect" id="node1" title="OrientationValues reads and outputs orientation parameters." alt="" coords="74,95,213,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,127,32"/>
-<area shape="rect" id="node3" href="$classOrientationSensor.html" title="OrientationSensor represents a 9&#45;Degrees&#45;of&#45;Freedom sensor (magnetometer, accelerometer,..." alt="" coords="151,5,290,32"/>
-</map>

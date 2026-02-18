@@ -1,5 +1,0 @@
-<map id="src/orientation_sensor.h" name="src/orientation_sensor.h">
-<area shape="rect" id="node1" title="Orientation sensor interface to SensESP." alt="" coords="55,5,234,32"/>
-<area shape="rect" id="node2" href="$main_8cpp.html" title="Orientation output in Signal K format via SensESP. This file provides examples for using the Orientat..." alt="" coords="5,80,111,107"/>
-<area shape="rect" id="node3" href="$orientation__sensor_8cpp.html" title="Orientation sensor interface to SensESP." alt="" coords="135,80,328,107"/>
-</map>
