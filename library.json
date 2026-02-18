@@ -1,6 +1,6 @@
 {
   "name": "SignalK-Orientation",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "Sends orientation data from accelerometer/gyroscope/magnetometer sensors in Signal K format via WiFi. Uses NXP version 7 sensor fusion algorithm. Hardware required: ESP32 platform, FXOS8700/FXAS21002 orientation sensor.",
   "keywords": "orientation, sensor fusion, compass, magnetometer, e-compass, attitude and heading reference system, Signal K, sensESP",
   "repository":
