@@ -38,7 +38,7 @@ After you have the basic setup working:
 ```
 lib_deps =
    [...]
-   SignalK/SensESP @ ^2.5.0
+   SignalK/SensESP @ >=3.0.0-beta.6,<4.0.0-alpha.1
    https://github.com/BjarneBitscrambler/SignalK-Orientation.git
 ```
 4. Replace the contents of your Project's `main.cpp` file with the contents of the sample file included with this library (found in `examples/example_main.cpp`  Then edit your `main.cpp` to reflect the details of your particular setup (e.g. WiFi credentials, I2C pins connected to the sensor, etc). Be sure to read the comments in `main.cpp` that explain how to enable the various orientation parameters, setup the Signal K paths, and so forth.
@@ -50,7 +50,7 @@ If you start with a basic configuration and proceed in small testable steps, it 
 * **Signal K Server** https://github.com/SignalK/signalk-server a Signal K server intended for Raspberry Pi, Beaglebone, or UDOO platforms.
 * **SensESP** https://github.com/SignalK/SensESP for setting up an ESP32 sensor and connecting it to a Signal K server. See also the Wiki at this location for additional advice on getting the built-in sensors reporting to the Signal K server.
 * **Sensor Fusion** https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP has details on the sensor fusion algorithm and orientation sensor performance in the *Readme*, *Wiki*, and *Documentation* sections
-* **this library** Additional information, particularly relating to performing magnetic calibration, is in this project's *Wiki*.
+* **this library** Additional information, particularly relating to performing magnetic calibration, is in this project's *Wiki*. You can also view the documentation in a browser, [here](https://bjarnebitscrambler.github.io/SignalK-Orientation/)
 * **Contact Me** I can be contacted through the Discussions tab on the OrientationSensorFusion-ESP library: https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP/discussions
 
 ### ESP8266 Support Note 
