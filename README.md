@@ -14,7 +14,9 @@ It uses a 9-axis combination accelerometer/magnetometer/gyroscope attached to an
 Using the hardware below, Signal K messages containing heading data can be output at up to 40 Hz.
 
 ## Hardware
-Orientation sensing uses an NXP FXOS8700 and FXAS21002C/FXAS21002CQ combination sensor, like [the Adafruit 3463 module](https://www.adafruit.com/product/3463)
+My underlying [Orientation library](https://github.com/BjarneBitscrambler/OrientationSensorFusion-ESP), on which this one depends, now works with two choices of 9DoF sensor boards:
+- an NXP **FXOS8700 and FXAS21002C/FXAS21002CQ** combination, like [the Adafruit 3463 module](https://www.adafruit.com/product/3463)
+- the newer STM **LIS3MDL and LSM6DSOX** combination, like [Adafruit's 4517 module](https://www.adafruit.com/product/4517)
 
 Processing and WiFi connection is provided by an ESP32 module. It has been tested successfully on following boards:
 * [ESP32-WROVER-KIT](https://www.digikey.ca/en/products/detail/espressif-systems/ESP-WROVER-KIT-VB/8544301)
@@ -34,12 +36,20 @@ Follow the instructions in the [SensESP README](https://github.com/SignalK/SensE
 After you have the basic setup working:
 1. Start a new Project in PlatformIO for the Arduino and your processor platform
 2. Copy the `platformio.ini` file from your working basic project (above) into your new project folder
-3. Make one modification to your shiny new `platformio.ini`: add these two libraries to the *lib_deps* section, as follows. See this project's sample `platformio.ini` for more details and options.
+3. Make two modifications to your shiny new `platformio.ini`:
+- add these two libraries to the *lib_deps* section, as follows. See this project's sample `platformio.ini` for more details and options.
 ```
 lib_deps =
    [...]
    SignalK/SensESP @ >=3.0.0-beta.6,<4.0.0-alpha.1
    https://github.com/BjarneBitscrambler/SignalK-Orientation.git
+```
+- add a line to your `build_flags` indicating which sensor hardware the OrientationSensorFusion library needs to work with.
+```
+   build_flags = 
+      ;choose one of these following hardware sensors and comment-out the other
+      ;-D SENSOR_FXAX2100x_AND_FXOS8700
+	   -D SENSOR_LSM6DSOX_LIS3MDL
 ```
 4. Replace the contents of your Project's `main.cpp` file with the contents of the sample file included with this library (found in `examples/example_main.cpp`  Then edit your `main.cpp` to reflect the details of your particular setup (e.g. WiFi credentials, I2C pins connected to the sensor, etc). Be sure to read the comments in `main.cpp` that explain how to enable the various orientation parameters, setup the Signal K paths, and so forth.
 5. Build, upload, and test your Project.
