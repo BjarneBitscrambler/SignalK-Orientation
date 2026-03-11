@@ -1,0 +1,30 @@
+{
+  "name": "SignalK-Orientation",
+  "version": "1.0.1",
+  "description": "Provides Orientation (heading, pitch, roll, etc) data in Signal K format using SensESP",
+  "type": "library",
+  "keywords": [
+    "9 DoF",
+    "orientation",
+    "LIS3MDL",
+    "LSM6DSOX",
+    "FXOS8700",
+    "FXAS21002",
+    "SensESP",
+    "Signal K"
+  ],
+  "author": "Bjarne Hansen",
+  "license": "BSD 3-Clause",
+  "homepage": "https://github.com/BjarneBitscrambler/SignalK-Orientation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BjarneBitscrambler/SignalK-Orientation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BjarneBitscrambler/SignalK-Orientation/issues"
+  },
+  "dependencies": {
+    "SensESP": "^3.0.0-beta.6",
+    "OrientationSensorFusion-ESP": "^1.0.0"
+  }
+}
