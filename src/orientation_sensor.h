@@ -2,7 +2,8 @@
  *  @brief Orientation sensor interface to SensESP
  * 
  * Provides Orientation from 9DOF sensor combination (magnetometer,
- * accelerometer, gyroscope) consisting of FXOS8700 + FXAS21002
+ * accelerometer, gyroscope) consisting of FXOS8700 + FXAS21002 or
+ * LIS3MDL+LSM6DSOX sensors.
  */
 
 #ifndef orientation_sensor_H_
@@ -36,7 +37,10 @@
 class OrientationSensor {
  public:
   OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
-                    uint8_t accel_mag_i2c_addr, uint8_t gyro_i2c_addr);
+                                     uint8_t accel_i2c_addr,
+                                     uint8_t mag_i2c_addr,
+                                     uint8_t gyro_i2c_addr,
+                                     uint8_t therm_i2c_addr);
   SensorFusion* sensor_interface_;  ///< sensor's Fusion Library interface
   void ReadAndProcessSensors(void);  ///< reads sensor hardware and runs fusion algorithm
   int GetFusionRateHz(void);

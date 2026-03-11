@@ -3,8 +3,10 @@
  * This file provides examples for using the Orientation library together
  * with SensESP to report vessel orientation data to a Signal K server.
  * 
- * Intended hardware is an ESP32 platform and an FXOS8700/FXAS21002
- * combination accelerometer/magnetometer/gyroscope.
+ * Intended hardware is an ESP32 platform and a 9-DoF 
+ * combination accelerometer/magnetometer/gyroscope. The Orientation
+ * library currently supports NXP's FXOS8700+FXAS21002
+ * and STM's LIS3MDL+LSM6DSOX sensors.
  * 
  * The examples include:
  *   * Compass Heading output
@@ -66,10 +68,12 @@
 
 
 // Sensor hardware details: I2C addresses and pins       
-#define BOARD_ACCEL_MAG_I2C_ADDR    (0x1F) ///< I2C address on Adafruit breakout board
-#define BOARD_GYRO_I2C_ADDR         (0x21) ///< I2C address on Adafruit breakout board
-#define PIN_I2C_SDA (23)          // Adjust to your board. A value of -1
-#define PIN_I2C_SCL (25)          //   will use default Arduino pins.
+#define BOARD_ACCEL_I2C_ADDR  (0x6a) //I2C address (0x6A Adafruit 4517; 0x1F Adafruit 3643)
+#define BOARD_MAG_I2C_ADDR    (0x1c) //I2C address (0x1C Adafruit 4517; 0x1F Adafruit 3643)
+#define BOARD_GYRO_I2C_ADDR   (0x6a) //I2C address (0x6A Adafruit 4517; 0x21 Adafruit 3643)
+#define BOARD_THERM_I2C_ADDR  (0x6a) //I2C address (0x6A Adafruit 4517; 0x1F Adafruit 3643)
+#define PIN_I2C_SDA (11)          // Adjust to your board. A value of -1
+#define PIN_I2C_SCL (12)          //   will use default Arduino pins.
 #define PIN_SWITCH_CAL_SAVE (32)  // Optional switch attached to this pin saves magnetic calibration
 #define SWITCH_ACTIVE_STATE (0)   // Input is LOW when Switch is pushed
 
@@ -253,7 +257,11 @@ void setup() {
    * changes.
    */
   auto* orientation_sensor = new OrientationSensor(
-      PIN_I2C_SDA, PIN_I2C_SCL, BOARD_ACCEL_MAG_I2C_ADDR, BOARD_GYRO_I2C_ADDR);
+      PIN_I2C_SDA, PIN_I2C_SCL, 
+      BOARD_ACCEL_I2C_ADDR,
+      BOARD_MAG_I2C_ADDR,
+      BOARD_GYRO_I2C_ADDR,
+      BOARD_THERM_I2C_ADDR);
   const int fusionIntervalMs = 1000 / orientation_sensor->GetFusionRateHz();
   event_loop()->onRepeat( fusionIntervalMs,
                           [orientation_sensor]() { orientation_sensor->ReadAndProcessSensors(); }

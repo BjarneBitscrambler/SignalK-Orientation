@@ -20,39 +20,38 @@ static const char* TAG = "orientation_sensor.cpp";
  *
  * @param pin_i2c_sda Pin of SDA line to sensor. Use -1 for Arduino default.
  * @param pin_i2c_scl Pin of SCL line to sensor. Use -1 for Arduino default.
- * @param accel_mag_i2c_addr I2C address of accelerometer/magnetometer IC.
+ * @param accel_i2c_addr I2C address of accelerometer  IC.
+ * @param mag_i2c_addr I2C address of magnetometer IC.
  * @param gyro_i2c_addr I2C address of gyroscope IC.
- * @param config_path RESTful path by which sensor can be configured.
+ * @param therm_i2c_addr I2C address of thermometer IC.
  */
 OrientationSensor::OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
-                                     uint8_t accel_mag_i2c_addr,
-                                     uint8_t gyro_i2c_addr) {
+                                     uint8_t accel_i2c_addr,
+                                     uint8_t mag_i2c_addr,
+                                     uint8_t gyro_i2c_addr,
+                                     uint8_t therm_i2c_addr) {
   sensor_interface_ = new SensorFusion();  // create our fusion engine instance
 
   bool success;
   // init IO subsystem, passing NULLs since we use Signal-K output instead.
   success =
       sensor_interface_->InitializeInputOutputSubsystem(NULL, NULL) &&
-      // connect to the sensors.  Accelerometer and magnetometer are in same IC.
-      sensor_interface_->InstallSensor(accel_mag_i2c_addr,
+      // connect to the sensors.  Some sensors may be in same IC, and therefore same I2C addr.
+      sensor_interface_->InstallSensor(mag_i2c_addr,
                                        SensorType::kMagnetometer) &&
-      sensor_interface_->InstallSensor(accel_mag_i2c_addr,
+      sensor_interface_->InstallSensor(accel_i2c_addr,
                                        SensorType::kAccelerometer) &&
-      // A thermometer (uncalibrated) is available in the
-      // accelerometer/magnetometer IC.
-      sensor_interface_->InstallSensor(accel_mag_i2c_addr,
+      // A thermometer (uncalibrated) is avail in one of the main sensor ICs
+      sensor_interface_->InstallSensor(therm_i2c_addr,
                                        SensorType::kThermometer) &&
       sensor_interface_->InstallSensor(gyro_i2c_addr, SensorType::kGyroscope);
   if (!success) {
-    //debugE("Trouble installing sensors.");
-    // ...
     ESP_LOGE(TAG, "Trouble installing sensors.");
   } else {
     sensor_interface_->Begin(pin_i2c_sda, pin_i2c_scl);
-    //debugI("Sensors connected & Fusion ready");
     ESP_LOGI(TAG, "Sensors connected & Fusion ready");
 
-    // The Fusion Library, in build.h, defines how fast the ICs generate new
+    // The Fusion Library's build.h file defines how fast the ICs generate new
     // orientation data and how fast the fusion algorithm runs, using FUSION_HZ.
     // Usually this rate should be the same as ReadAndProcessSensors() is
     // called.
@@ -72,7 +71,7 @@ OrientationSensor::OrientationSensor(uint8_t pin_i2c_sda, uint8_t pin_i2c_scl,
 int OrientationSensor::GetFusionRateHz(void) {
   return FUSION_HZ;
 
-}  // end ReadAndProcessSensors()
+}  // end GetFusionRateHz()
 
 /**
  * @brief Read the Sensors and calculate orientation parameters
@@ -119,6 +118,8 @@ OrientationValues::OrientationValues(OrientationSensor* orientation_sensor,
   save_mag_cal_ = 0;
 
 }  // end OrientationValues()
+
+
 float OrientationValues::ReportValue() {
   //check whether magnetic calibration has been requested to be saved or deleted
   if( 1 == save_mag_cal_ ) {
@@ -194,4 +195,4 @@ float OrientationValues::ReportValue() {
       break; 
   }
   return output;
-}  // end Update()
+}  // end ReportValue()
